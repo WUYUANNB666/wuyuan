@@ -1,0 +1,2344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>无怨导航页</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a11'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%23d6b96a' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23d6b96a'/%3E%3C/svg%3E">
+<!-- PWA / 添加到主屏幕 -->
+<meta name="theme-color" content="#0a0a10">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="无怨">
+<style>
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, sans-serif;
+    touch-action: manipulation;
+}
+:root{
+    --glass-bg: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.12);
+    --gold: #d6b96a;
+    --main-blue: #2980ef;
+    --text-white: #ffffff;
+    --text-gray: rgba(255,255,255,0.74);
+    --card-h: 120px;
+}
+body.dark-mode{
+    --glass-bg: rgba(255,255,255,0.06);
+}
+body{
+    min-height: 100vh;
+    padding: 48px 20px 80px;
+    background:
+        radial-gradient(ellipse 120% 58% at 50% 0%, rgba(226,190,120,.26), transparent 62%),
+        linear-gradient(165deg, #0a0a10 0%, #1c1406 32%, #2c1d08 52%, #140d04 78%, #0a0a10 100%);
+    color: var(--text-white);
+    display: flex;
+    flex-direction: column;
+}
+body.dark-mode{
+    background: #000000;
+}
+body.dark-mode .aurora,
+body.dark-mode .stream,
+body.dark-mode .sheen,
+body.dark-mode .sheen-b{animation:none;opacity:0}
+.bg-fx{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.aurora{position:absolute;border-radius:50%;filter:blur(70px);will-change:transform}
+.aurora-a{top:-20vmax;left:-16vmax;width:62vmax;height:62vmax;background:radial-gradient(circle at 40% 40%,rgba(226,190,120,.32),transparent 62%);animation:driftA 26s ease-in-out infinite alternate}
+.aurora-b{bottom:-26vmax;right:-18vmax;width:58vmax;height:58vmax;background:radial-gradient(circle at 60% 60%,rgba(206,150,70,.28),transparent 62%);animation:driftB 34s ease-in-out infinite alternate}
+.aurora-c{top:6vmax;left:36vmax;width:34vmax;height:34vmax;background:radial-gradient(circle at 50% 50%,rgba(238,216,172,.22),transparent 60%);animation:driftC 24s ease-in-out infinite alternate}
+@keyframes driftA{to{transform:translate(6vmax,5vmax) scale(1.08)}}
+@keyframes driftB{to{transform:translate(-6vmax,-5vmax) scale(1.1)}}
+@keyframes driftC{to{transform:translate(4vmax,-4vmax) scale(1.06)}}
+.streams{position:absolute;inset:-6% 0;pointer-events:none}
+.stream{
+    position:absolute;left:-45vw;height:1px;width:34vw;
+    background:linear-gradient(90deg,transparent,rgba(255,226,155,.06) 25%,rgba(255,222,145,.42) 50%,rgba(255,226,155,.06) 75%,transparent);
+    border-radius:1px;opacity:0;
+    box-shadow:0 0 14px 1px rgba(255,212,130,.20);
+}
+.stream:nth-child(1){top:18%;animation:flow 20s linear infinite}
+.stream:nth-child(2){top:38%;width:26vw;animation:flow 24s linear infinite;animation-delay:7s}
+.stream:nth-child(3){top:56%;width:40vw;animation:flow 28s linear infinite;animation-delay:14s}
+.stream:nth-child(4){top:74%;width:22vw;animation:flow 22s linear infinite;animation-delay:4s}
+.stream:nth-child(5){top:88%;width:30vw;animation:flow 26s linear infinite;animation-delay:17s}
+.stream:nth-child(6){top:28%;width:20vw;animation:flow 30s linear infinite;animation-delay:10s}
+.stream:nth-child(7){top:64%;width:28vw;animation:flow 33s linear infinite;animation-delay:22s}
+.stream:nth-child(8){top:12%;width:24vw;animation:flow 21s linear infinite;animation-delay:5s}
+.stream:nth-child(9){top:48%;width:32vw;animation:flow 27s linear infinite;animation-delay:12s}
+.stream:nth-child(10){top:82%;width:26vw;animation:flow 23s linear infinite;animation-delay:19s}
+@keyframes flow{
+    0%{transform:translateX(0) translateY(0);opacity:0}
+    16%{opacity:.55}
+    80%{opacity:.55}
+    100%{transform:translateX(150vw) translateY(-4vh);opacity:0}
+}
+.sheen{
+    position:absolute;top:-30%;bottom:-30%;left:-42%;width:28vmax;
+    background:linear-gradient(90deg,transparent,rgba(255,234,175,.08) 45%,rgba(255,244,205,.02) 70%,transparent);
+    transform:rotate(14deg);filter:blur(5px);opacity:0;
+    animation:sheen 20s ease-in-out infinite;
+}
+@keyframes sheen{
+    0%,16%{left:-44%;opacity:0}
+    32%{opacity:.5}
+    52%{opacity:.5}
+    66%,100%{left:140%;opacity:0}
+}
+.sheen-b{
+    position:absolute;top:-20%;bottom:-20%;left:-46%;width:20vmax;
+    background:linear-gradient(90deg,transparent,rgba(255,240,190,.10) 45%,transparent);
+    transform:rotate(-12deg);filter:blur(6px);opacity:0;
+    animation:sheenB 26s ease-in-out infinite;
+}
+@keyframes sheenB{
+    0%,20%{left:-48%;opacity:0}
+    38%{opacity:.5}
+    55%{opacity:.5}
+    70%,100%{left:140%;opacity:0}
+}
+.bg-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.05;mix-blend-mode:overlay}
+.bg-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 50%,rgba(2,3,8,.74) 100%)}
+.splash{
+    position:fixed;inset:0;z-index:2000;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
+    background:
+        radial-gradient(ellipse 120% 70% at 50% 30%, rgba(226,190,120,.16), transparent 60%),
+        #0a0a10;
+    transition:opacity .5s ease;
+}
+.splash.done{opacity:0;pointer-events:none}
+.splash .spinner{
+    width:56px;height:56px;border-radius:50%;
+    border:3px solid rgba(214,185,106,.18);
+    border-top-color:var(--gold);
+    animation:spin 1s linear infinite;
+}
+.splash .brand{
+    font-size:14px;letter-spacing:.4em;color:var(--gold);font-weight:500;
+}
+.splash .hint{font-size:12px;color:rgba(255,255,255,.45);letter-spacing:.1em}
+@keyframes spin{to{transform:rotate(360deg)}}
+.header-title{
+    text-align: center;
+    font-size: 54px;
+    font-weight: 700;
+    margin-bottom: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    letter-spacing: 2px;
+    position: relative;
+}
+.white-text{color: var(--text-white);}
+.gradient-text{
+    background: linear-gradient(90deg, #fff8e7, #e9cf9e, #c9a558, #e9cf9e, #fff8e7);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientFlow 8s linear infinite;
+}
+@keyframes gradientFlow{
+    0%{background-position: 0% 50%;}
+    100%{background-position: 300% 50%;}
+}
+body.dark-mode .gradient-text{
+    background: linear-gradient(90deg, #ff6fb0, #ffd86b, #6fb4ff, #ff6b6b, #ffa14d, #ff6fb0);
+    background-size: 600% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    animation: colorFlow 12s linear infinite;
+}
+@keyframes colorFlow{
+    0%{background-position: 0% 50%;}
+    100%{background-position: 600% 50%;}
+}
+.toggle-button{
+    width: 52px;
+    height: 30px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 30px;
+    position: relative;
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+.toggle-button:active{transform: scale(0.92);}
+.toggle-circle{
+    width: 24px;
+    height: 24px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    transform: translateY(-50%);
+    transition: left 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d6b96a;
+}
+.toggle-circle svg{
+    width: 14px;
+    height: 14px;
+    display: block;
+}
+.toggle-circle .icon-moon{display: none;}
+.toggle-button.active .toggle-circle{
+    left: 25px;
+    transform: translateY(-50%);
+}
+.toggle-button.active .toggle-circle .icon-sun{display: none;}
+.toggle-button.active .toggle-circle .icon-moon{display: block;}
+.tutorial-box{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+.tutorial-btn{
+    width:56px;
+    height:56px;
+    background: var(--glass-bg);
+    border:1px solid var(--glass-border);
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+    backdrop-filter: blur(8px);
+    transition: transform 0.3s ease;
+    margin-top: 6px;
+}
+.tutorial-btn:active{transform: scale(0.92);}
+.tutorial-tip{
+    font-size:12px;
+    color:var(--text-gray);
+    margin-top: 4px;
+}
+/* ===================== 搜索框 ===================== */
+.search-wrap{
+    max-width: 1180px;
+    width: 100%;
+    margin: 0 auto 22px;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity .5s ease, transform .5s ease;
+}
+body.entered .search-wrap{
+    opacity: 1;
+    transform: none;
+}
+.search-box{
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 0 16px;
+    height: 52px;
+    transition: border-color .3s ease, background .3s ease;
+}
+.search-box:focus-within{
+    border-color: rgba(214,185,106,.55);
+    background: rgba(255,255,255,0.09);
+}
+.search-box .s-ic{
+    width: 18px;
+    height: 18px;
+    color: var(--gold);
+    flex-shrink: 0;
+}
+.search-box input{
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 15px;
+    font-family: inherit;
+    letter-spacing: .02em;
+    padding: 0;
+}
+.search-box input::placeholder{
+    color: rgba(255,255,255,0.4);
+}
+.search-clear{
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: rgba(255,255,255,0.7);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background .2s ease;
+}
+.search-clear:hover{background: rgba(255,255,255,0.18);}
+.search-box input:not(:placeholder-shown) ~ .search-clear{
+    display: flex;
+}
+.search-empty{
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255,255,255,0.4);
+    font-size: 14px;
+    letter-spacing: .1em;
+    display: none;
+}
+.search-empty.show{display: block;}
+/* ===== 搜索快捷打开下拉面板（数字 / 网址 / 关键词命中按钮） ===== */
+.search-quick{
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: rgba(18,15,9,.96);
+    border: 1px solid rgba(214,185,106,.35);
+    border-radius: 14px;
+    padding: 6px;
+    box-shadow: 0 18px 44px rgba(0,0,0,.5);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    z-index: 70;
+    display: none;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.search-quick.show{display: block;}
+.sq-item{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
+    color: #fff;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+    transition: background .18s ease;
+}
+.sq-item:hover,
+.sq-item.hover{ background: rgba(214,185,106,.14); }
+.sq-idx{
+    flex-shrink: 0;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 4px;
+    border-radius: 6px;
+    background: rgba(214,185,106,.18);
+    color: var(--gold);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.sq-item.sq-url .sq-idx{ background: rgba(41,128,239,.16); color: #7db8ff; }
+.sq-name{
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+.sq-desc{
+    flex: 1;
+    min-width: 0;
+    font-size: 12px;
+    color: var(--text-gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sq-go{
+    flex-shrink: 0;
+    color: var(--gold);
+    font-size: 12px;
+}
+.sq-empty{
+    padding: 14px 12px;
+    text-align: center;
+    color: rgba(255,255,255,.4);
+    font-size: 13px;
+}
+.grid-container{
+    max-width: 1180px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 26px;
+    flex:1;
+    width: 100%;
+}
+.grid-card{
+    position: relative;
+    height: var(--card-h);
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 22px;
+    padding-top: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity .55s ease, transform .35s ease, border-color .35s ease;
+}
+.card-icon{
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    color: var(--gold);
+    opacity: 0.92;
+}
+.card-icon svg{width:100%;height:100%;display:block;}
+.card-copy{display:none;}
+.card-lower .card-main-text,
+.card-lower .card-sub-text{ transform: translateY(8px); }
+body.entered .grid-card{opacity:1; animation: cardIn .55s ease both}
+body.entered .grid-card:nth-child(1){animation-delay:.08s}
+body.entered .grid-card:nth-child(2){animation-delay:.18s}
+body.entered .grid-card:nth-child(3){animation-delay:.28s}
+body.entered .grid-card:nth-child(4){animation-delay:.38s}
+body.entered .grid-card:nth-child(5){animation-delay:.48s}
+body.entered .grid-card:nth-child(6){animation-delay:.58s}
+body.entered .grid-card:nth-child(7){animation-delay:.68s}
+body.entered .grid-card:nth-child(8){animation-delay:.78s}
+@keyframes cardIn{from{opacity:0}to{opacity:1}}
+/* 动画播完加 card-done 类锁定终态，避免搜索过滤时重播动画闪动（优先级需高于 body.entered .grid-card） */
+body.entered .grid-card.card-done{opacity:1; animation:none;}
+.grid-card:active{transform: scale(0.92);}
+.grid-card:hover{border-color: rgba(214,185,106,.5);}
+/* 数字快捷选中高亮 */
+.grid-card.search-hit{
+    border-color: rgba(214,185,106,.9);
+    box-shadow: 0 0 0 2px rgba(214,185,106,.35), 0 8px 28px rgba(0,0,0,.35);
+    transform: translateY(-2px);
+}
+.card-main-text{
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: var(--text-white);
+    font-weight: 600;
+}
+.card-sub-text{
+    font-size: 14px;
+    color: var(--text-gray);
+    line-height: 1.5;
+}
+.modal-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 999;
+    overflow-y: auto;
+    padding-bottom: max(30px, env(safe-area-inset-bottom) + 60px);
+}
+.modal-overlay.hide{display: none;}
+.modal-content{
+    width: 100%;
+    max-width: 460px;
+    background: #15130e;
+    border: 1px solid rgba(214,185,106,0.32);
+    border-radius: 22px;
+    padding: 34px 30px;
+    padding-bottom: calc(42px + env(safe-area-inset-bottom));
+    color: #eee;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+.modal-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.modal-head .m-x{
+    width: 30px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.5);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: color .2s, background .2s;
+}
+.modal-head .m-x:hover{color:#fff;background:rgba(255,255,255,0.08);}
+.modal-title{
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 0;
+    color: var(--gold);
+    text-align: left;
+    letter-spacing: 1px;
+}
+.modal-text{
+    font-size: 14px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.85);
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 26px;
+}
+.modal-text h3{font-size:14px;font-weight:600;margin-bottom:10px;color:#fff;}
+.modal-text h3 a{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(214,185,106,.4);padding-bottom:1px;}
+.modal-text h3 a:hover{color:#e7c97e;}
+.modal-text p{margin-bottom: 14px;color:#e4d09c;}
+.modal-text .detail-link{color:var(--gold);text-decoration:none;}
+.modal-text .detail-link:hover{text-decoration:underline;}
+.modal-bottom-bar{
+    margin-top:auto;
+    position:relative;
+    z-index: 99;
+}
+.checkbox-row{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.checkbox-row input{
+    width: 22px;
+    height: 22px;
+    accent-color: var(--gold);
+    cursor: pointer;
+}
+.checkbox-row label{
+    font-size: 14px;
+    color: #ddd;
+    cursor: pointer;
+}
+.enter-btn{
+    width: 100%;
+    height: 52px;
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.enter-btn:disabled{
+    background: #2a2a2a;
+    color:#888;
+    cursor: not-allowed;
+    transform: scale(1);
+}
+.enter-btn:not(:disabled){
+    background: linear-gradient(90deg,#b8963f,#c9a558);
+    cursor: pointer;
+}
+.enter-btn:not(:disabled):active{transform: scale(0.92);}
+.copyright{
+    text-align: center;
+    margin-top: 50px;
+    font-size: 13px;
+    opacity: 0.48;
+    color: var(--text-gray);
+    letter-spacing: 1px;
+}
+.mini-music-player{
+    position: absolute;
+    top: -54px;
+    right: 0;
+    width: 270px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    border-radius: 999px;
+    padding: 8px 12px;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+.music-play-btn{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.music-play-btn svg{
+    width: 14px;
+    height: 14px;
+    display: block;
+}
+.music-play-btn .icon-pause{display: none;}
+.music-play-btn.playing .icon-play{display: none;}
+.music-play-btn.playing .icon-pause{display: block;}
+.music-play-btn:active{transform: scale(0.9);}
+.music-progress-wrap{
+    flex: 1;
+    height: 26px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-top: -9px;
+}
+.music-spectrum{
+    width: 100%;
+    height: 18px;
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+    margin-bottom: 4px;
+    pointer-events: none;
+}
+.music-spectrum .bar{
+    flex: 1;
+    min-width: 1px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 1px;
+    height: 3px;
+}
+body.entered .music-spectrum .bar{
+    box-shadow: 0 0 4px rgba(214,185,106,0.35);
+}
+body.dark-mode .music-spectrum .bar{
+    box-shadow: none;
+}
+/* 播放音乐时暂停背景极光/流光/光带动画，降低 CPU/GPU 开销（视觉静止、观感不变） */
+body.music-playing .aurora,
+body.music-playing .stream,
+body.music-playing .sheen,
+body.music-playing .sheen-b{
+    animation-play-state: paused;
+}
+.music-progress-track{
+    width: 100%;
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+}
+.music-progress{
+    height: 100%;
+    width: 0%;
+    background: var(--gold);
+    border-radius: 3px;
+}
+.music-time-current{
+    position: absolute;
+    left: 0;
+    top: 28px;
+    font-size: 11px;
+    color: #fff;
+}
+.music-time-total{
+    position: absolute;
+    right: 0;
+    top: 28px;
+    font-size: 11px;
+    color: #fff;
+}
+audio{display: none;}
+.music-modal-overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+    z-index:1500;display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.music-modal{
+    width:100%;max-width:380px;
+    background:rgba(22,18,12,.96);
+    border:1px solid rgba(214,185,106,.28);
+    border-radius:18px;padding:22px;color:#fff;
+    max-height:80vh;display:flex;flex-direction:column;
+}
+.music-modal-title{
+    font-size:17px;font-weight:600;margin-bottom:16px;letter-spacing:1px;color:#fff;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.mt-en{
+    font-size:12px;font-weight:400;letter-spacing:2px;
+    color:rgba(255,255,255,0.45);text-transform:uppercase;flex-shrink:0;
+}
+.music-list{max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;}
+.music-item{
+    padding:13px 14px;border-radius:10px;background:rgba(255,255,255,.05);
+    cursor:pointer;font-size:14px;transition:background .2s,border-color .2s;
+    border:1px solid transparent;
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.music-item .mi-left{display:flex;align-items:center;gap:6px;min-width:0;}
+.music-item .music-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.playing-tag{color:var(--gold);font-size:12px;letter-spacing:1px;flex-shrink:0;}
+.music-item:hover{background:rgba(214,185,106,.12);}
+.music-item.active{border-color:rgba(214,185,106,.6);color:var(--gold);background:rgba(214,185,106,.10);}
+.music-item .playing-mark{color:var(--gold);margin-right:6px;}
+.music-modal-close{
+    width:100%;margin-top:14px;height:42px;border-radius:12px;border:none;
+    background:rgba(255,255,255,.08);color:#fff;font-size:14px;cursor:pointer;
+    transition:background .2s;flex-shrink:0;
+}
+.music-modal-close:hover{background:rgba(255,255,255,.14);}
+/* ================= 音乐交互增强（可拖动进度条 / 滚轮音量 / 长按横滑跳转） ================= */
+.music-disc-btn{
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid rgba(214,185,106,.55);
+    background: rgba(214,185,106,.12);
+    color: var(--gold);
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s, border-color .3s, background .3s;
+}
+.music-disc-btn:active{transform: scale(.9);}
+.music-disc-btn:hover{border-color: rgba(214,185,106,.9); background: rgba(214,185,106,.2);}
+.music-disc-btn svg{
+    width: 16px;
+    height: 16px;
+    display: block;
+}
+.music-disc-btn.playing svg{
+    animation: discSpin 4s linear infinite;
+}
+@keyframes discSpin{to{transform: rotate(360deg)}}
+.music-progress-holder{
+    position: relative;
+    width: 100%;
+}
+.mini-music-player{cursor: default;}
+.music-progress-track{
+    cursor: pointer;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.music-progress-track::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -7px;
+    bottom: -7px;
+}
+.music-progress-thumb{
+    position: absolute;
+    top: 50%;
+    left: 0%;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid #16130e;
+    box-shadow: 0 0 8px rgba(214,185,106,.6);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+.music-spectrum{
+    pointer-events: auto;
+    cursor: pointer;
+    touch-action: pan-y;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.music-spectrum.longpressing{
+    cursor: ew-resize;
+    box-shadow: inset 0 0 0 1px rgba(214,185,106,.45);
+    border-radius: 3px;
+}
+.player-toast{
+    position: fixed;
+    left: 50%;
+    bottom: 96px;
+    transform: translateX(-50%);
+    background: rgba(12,10,6,.82);
+    border: 1px solid rgba(214,185,106,.45);
+    color: #fff;
+    font-size: 13px;
+    letter-spacing: .04em;
+    padding: 8px 16px;
+    border-radius: 999px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+    z-index: 3000;
+    white-space: nowrap;
+}
+.player-toast.show{opacity: 1;}
+.back-top-btn{
+    position: fixed;
+    right: 22px;
+    bottom: 30px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid rgba(214,185,106,.5);
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(16px);
+    pointer-events: none;
+    transition: opacity .35s ease, transform .35s ease;
+    z-index: 1200;
+    box-shadow: 0 8px 24px rgba(0,0,0,.35);
+}
+.back-top-btn.show{
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+}
+.back-top-btn:active{transform: scale(.9);}
+.back-top-btn svg{
+    width: 20px;
+    height: 20px;
+    display: block;
+}
+/* ===== 宽屏端：搜索栏贴最左上角、音乐播放器贴最右上角 ===== */
+@media screen and (min-width: 600px) {
+    body{ padding-top: 88px; }
+    .search-wrap{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 260px;
+        max-width: 260px;
+        margin: 0;
+        z-index: 60;
+    }
+    .mini-music-player{
+        top: -88px;
+        right: -20px;
+    }
+    .card-copy{
+        position: absolute;
+        top: 8px;
+        right: 40px;
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+        border: 1px solid var(--glass-border);
+        background: var(--glass-bg);
+        color: var(--gold);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        transition: border-color .25s ease, background .25s ease, transform .2s ease;
+    }
+    .card-copy svg{
+        width: 13px;
+        height: 13px;
+        display: block;
+    }
+    .card-copy .ok-ic{
+        display: none;
+        stroke: #4cd964;
+        fill: none;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    .card-copy.copied .copy-ic{ display: none; }
+    .card-copy.copied .ok-ic{ display: block; }
+    .card-copy:hover{
+        border-color: rgba(214,185,106,.65);
+        background: rgba(214,185,106,.16);
+    }
+    .card-copy:active{transform: scale(.9);}
+}
+@media screen and (max-width: 599px) {
+    :root{
+        --card-h: 100px;
+    }
+    .header-title{
+        font-size: 32px;
+        gap:10px;
+        margin-bottom: 36px;
+    }
+    .card-main-text{font-size:20px;}
+    .grid-container{gap:16px;}
+    .search-wrap{margin-bottom: 12px;}
+    .search-box{height: 46px; border-radius: 14px; padding: 0 14px;}
+    .search-box input{font-size: 14px;}
+    .mini-music-player{
+        top: -48px;
+        right: 0;
+        width: 150px;
+        padding: 6px 10px;
+        gap:6px;
+    }
+    .music-play-btn{
+        width: 24px;
+        height: 24px;
+    }
+    .music-play-btn svg{
+        width: 11px;
+        height: 11px;
+    }
+    .music-progress-wrap{
+        height: 22px;
+        margin-top: -7px;
+    }
+    .music-spectrum{
+        height: 14px;
+        gap: 0.5px;
+        margin-bottom: 3px;
+    }
+    .music-spectrum .bar{
+        min-width: 0.5px;
+    }
+    .music-progress-track{
+        height: 2.5px;
+    }
+    .music-time-current, .music-time-total{
+        font-size:9px;
+        top: 24px;
+    }
+    .toggle-button{
+        width: 42px;
+        height: 24px;
+    }
+    .toggle-circle{
+        width: 18px;
+        height: 18px;
+        top: 50%;
+        left: 3px;
+        transform: translateY(-50%);
+    }
+    .toggle-circle svg{
+        width: 11px;
+        height: 11px;
+    }
+    .toggle-button.active .toggle-circle{
+        left: 21px;
+        transform: translateY(-50%);
+    }
+    .player-toast{
+        bottom: 84px;
+        font-size: 12px;
+        padding: 7px 13px;
+    }
+    .back-top-btn{
+        right: 16px;
+        bottom: 20px;
+        width: 44px;
+        height: 44px;
+    }
+    .back-top-btn svg{
+        width: 18px;
+        height: 18px;
+    }
+    .music-disc-btn{
+        position: absolute;
+        right: calc(100% + 8px);
+        top: 50%;
+        margin-top: -14px;
+        width: 28px;
+        height: 28px;
+    }
+    .music-disc-btn svg{
+        width: 13px;
+        height: 13px;
+    }
+    .music-progress-thumb{
+        width: 9px;
+        height: 9px;
+        border-width: 1.5px;
+    }
+}
+@media (prefers-reduced-motion:reduce){
+    .aurora,.stream,.sheen,.sheen-b,.spinner,.gradient-text{animation:none}
+    .stream,.sheen,.sheen-b{opacity:0}
+    .grid-card,body.entered .grid-card{opacity:1;animation:none;transition:none}
+}
+/* ================= 隐藏彩蛋：连点标题 5 次 ================= */
+.egg-tap-ring{
+    position:fixed;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;
+    border:2px solid rgba(214,185,106,.85);
+    box-shadow:0 0 12px rgba(214,185,106,.6);
+    pointer-events:none;z-index:2500;
+    animation:eggTapRing .55s ease-out forwards;
+}
+@keyframes eggTapRing{
+    0%{transform:scale(.4);opacity:1}
+    100%{transform:scale(3.6);opacity:0}
+}
+.header-title.egg-tap{animation:eggTap .25s ease;}
+@keyframes eggTap{0%{transform:scale(1)}45%{transform:scale(.96)}100%{transform:scale(1)}}
+body.egg-flash::after{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:2390;
+    background:radial-gradient(circle at var(--egg-x,50%) var(--egg-y,40%),
+        rgba(255,236,180,.5), rgba(214,185,106,.16) 28%, transparent 62%);
+    animation:eggFlash 1.4s ease-out forwards;
+}
+@keyframes eggFlash{0%{opacity:0}12%{opacity:1}100%{opacity:0}}
+body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.97) both;}
+@keyframes eggShake{
+    0%,100%{transform:translate3d(0,0,0)}
+    20%{transform:translate3d(-3px,2px,0)}
+    40%{transform:translate3d(3px,-2px,0)}
+    60%{transform:translate3d(-2px,1px,0)}
+    80%{transform:translate3d(2px,-1px,0)}
+}
+.egg-canvas{
+    position:fixed;inset:0;pointer-events:none;z-index:2400;
+    opacity:1;transition:opacity .5s ease;
+}
+.egg-canvas.fade{opacity:0;}
+.egg-text-layer{
+    position:fixed;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:14px;
+    pointer-events:none;z-index:2450;
+}
+.egg-title{
+    font-size:clamp(48px,14vw,130px);font-weight:700;letter-spacing:.12em;
+    background:linear-gradient(100deg,#fff8e7,#e9cf9e,#c9a558,#fff8e7);
+    background-size:300% 100%;-webkit-background-clip:text;background-clip:text;
+    color:transparent;opacity:0;transform:scale(.55);
+    filter:drop-shadow(0 0 0 rgba(214,185,106,0));
+}
+.egg-text-layer.play .egg-title{
+    animation:eggTitle 3s cubic-bezier(.2,.7,.3,1) forwards;
+}
+@keyframes eggTitle{
+    0%{opacity:0;transform:scale(.55);letter-spacing:.5em;filter:drop-shadow(0 0 0 rgba(214,185,106,0))}
+    18%{opacity:1;transform:scale(1.06);letter-spacing:.12em;filter:drop-shadow(0 0 34px rgba(214,185,106,.75))}
+    30%{transform:scale(1)}
+    72%{opacity:1}
+    100%{opacity:0;transform:scale(1.06);letter-spacing:.2em;filter:drop-shadow(0 0 46px rgba(214,185,106,.35))}
+}
+.egg-sub{
+    font-size:clamp(11px,2.6vw,15px);letter-spacing:.42em;
+    color:rgba(255,255,255,.78);text-shadow:0 0 14px rgba(214,185,106,.6);opacity:0;
+}
+.egg-text-layer.play .egg-sub{
+    animation:eggSub 3s ease forwards;animation-delay:.55s;
+}
+@keyframes eggSub{
+    0%{opacity:0;transform:translateY(10px)}
+    20%{opacity:1;transform:translateY(0)}
+    75%{opacity:1}
+    100%{opacity:0;transform:translateY(-6px)}
+}
+</style>
+</head>
+<body>
+<div class="splash" id="splash" aria-hidden="true">
+    <div class="spinner"></div>
+    <div class="brand">无怨官网 / WUYUAN</div>
+    <div class="hint">@WYNBW</div>
+</div>
+<div class="bg-fx" aria-hidden="true">
+    <div class="aurora aurora-a"></div>
+    <div class="aurora aurora-b"></div>
+    <div class="aurora aurora-c"></div>
+    <div class="sheen"></div>
+    <div class="sheen-b"></div>
+    <div class="streams">
+        <div class="stream"></div>
+        <div class="stream"></div>
+        <div class="stream"></div>
+        <div class="stream"></div>
+        <div class="stream"></div>
+        <div class="stream"></div>
+        <div class="stream"></div>
+        <div class="stream"></div>
+        <div class="stream"></div>
+        <div class="stream"></div>
+    </div>
+    <div class="bg-grain"></div>
+    <div class="bg-vignette"></div>
+</div>
+<div class="modal-overlay" id="announcementModal">
+    <div class="modal-content">
+        <div class="modal-head">
+            <h2 class="modal-title">免责声明</h2>
+            <button type="button" class="m-x" id="disX" aria-label="关闭">✕</button>
+        </div>
+        <div class="modal-text">
+            <h3>永久导航页: <a href="https://xn--x8t30k.xyz/" target="_blank" rel="noopener">无怨.xyz</a></h3>
+            <h3>TG频道: <a href="https://t.me/WYNBW" target="_blank" rel="noopener">@WYNBW</a></h3>
+            <h3>QQ交流群: <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=QOA4AC0ShIDQH3XONzBcm7BUiJ1snCDnBdO2Sq7gd9KunMoGmTosG%2BRRfJ6X%2BWR0&busi_data=eyJncm91cENvZGUiOiIxMDY1Mjc5MzQ3IiwidG9rZW4iOiJHMy9IYWtVZ3N3T1h3ODhyaEp5ZjdHb0hmQk1BV2VBeDdoU1ZOSTZ5MGxxZ3ZWTmhYYTJxWCtzYkRwaHVxMXRHIiwidWluIjoiMjQxMTg2MDM2MSJ9&data=7tQJDIu1Rjqfc4OtskIQDP5dGS6jLqYqfAuAFl-qU8z2CsqoaT97Uy-2kQlAS_ny1TUSc-LYPidkUyhb5HS4kA&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener">1065279347</a></h3>
+            <p>1、本站所有工具、页面资源、外部跳转链接均来源于网络公开分享内容，仅用作编程技术学习、代码研究交流使用，严禁用于游戏违规登录、账号批量操作、绕过封禁、账号交易、卡密倒卖等违反游戏用户协议及国家法律法规的场景。</p>
+            <p>2、用户自愿访问、下载、使用本站任意功能，一切账号封禁、财产损失、账号被盗、法律追责等全部风险均由使用者本人独立全额承担，本站运营方不承担任何连带赔偿、法律连带责任。</p>
+            <p><a class="detail-link" href="https://devfile.vip/preview/txaz8uw7" target="_blank" rel="noopener">查看免责声明详情 →</a></p>
+        </div>
+        <div class="modal-bottom-bar">
+            <div class="checkbox-row">
+                <input type="checkbox" id="agreeCheck">
+                <label for="agreeCheck">我已完整阅读并同意全部免责条款</label>
+            </div>
+            <button class="enter-btn" id="enterBtn" disabled>确认进入站点</button>
+        </div>
+    </div>
+</div>
+<div class="music-modal-overlay" id="musicModal" style="display:none;">
+    <div class="music-modal">
+        <div class="music-modal-title">
+            <span>选择音乐</span>
+            <span class="mt-en">BACKGROUND</span>
+        </div>
+        <div class="music-list" id="musicList"></div>
+        <button type="button" class="music-modal-close" id="musicModalClose">关闭</button>
+    </div>
+</div>
+<div class="header-title">
+    <div class="mini-music-player" id="miniMusicPlayer" aria-label="背景音乐播放器">
+        <button type="button" class="music-disc-btn" id="musicDiscBtn" aria-label="选择音乐">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3v10.55A4 4 0 1 0 11 17V7h6V3H9z"/></svg>
+        </button>
+        <button type="button" class="music-play-btn" id="musicPlayBtn" aria-label="播放音乐">
+            <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        </button>
+        <div class="music-progress-wrap">
+            <div class="music-spectrum" id="musicSpectrum"></div>
+            <div class="music-progress-holder">
+                <div class="music-progress-track">
+                    <div class="music-progress" id="musicProgress"></div>
+                </div>
+                <div class="music-progress-thumb" id="musicProgressThumb"></div>
+            </div>
+            <span class="music-time-current" id="currentTime">0:00</span>
+            <span class="music-time-total" id="totalTime">0:00</span>
+        </div>
+        <audio id="miniMusicAudio" preload="none" playsinline></audio>
+    </div>
+    <span class="white-text">官网</span>
+    <div class="toggle-button" id="darkModeToggle">
+        <div class="toggle-circle">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
+    </div>
+    <span class="gradient-text">无怨</span>
+    <div class="tutorial-box">
+        <div class="tutorial-btn" id="tutorialBtn">介绍</div>
+        <div class="tutorial-tip">无怨个人录</div>
+       </div>
+</div>
+
+<!-- ===================== 搜索框 ===================== -->
+<div class="search-wrap">
+    <div class="search-box">
+        <svg class="s-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="搜索工具…（名称或描述）" autocomplete="off" spellcheck="false" aria-label="搜索工具">
+        <button type="button" class="search-clear" id="searchClear" aria-label="清空搜索">✕</button>
+        <div class="search-quick" id="searchQuick" role="listbox" aria-label="快捷打开"></div>
+    </div>
+</div>
+
+<div class="grid-container" id="gridContainer"><!-- 卡片由 JS 数据驱动渲染，见脚本区 CARDS --></div>
+<div class="search-empty" id="searchEmpty">没有找到相关工具</div>
+<div class="copyright">
+    无怨个人博客©2026 | 🐧交流群1065279347
+</div>
+<div class="player-toast" id="playerToast" aria-hidden="true"></div>
+<button type="button" class="back-top-btn" id="backTopBtn" aria-label="回到顶部">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+</button>
+<script>
+/* ================= 卡片数据驱动 ================= */
+var CARDS = [
+    { link:"https://new.818fka.com/shop/WYNB66", name:"主网址", desc:"低价数据号",
+      icon:"M232,96a7.89,7.89,0,0,0-.3-2.2L217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.8A7.89,7.89,0,0,0,24,96h0v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96ZM54,48H202l11.42,40H42.61Zm50,56h48v8a24,24,0,0,1-48,0Zm-16,0v8a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8ZM200,208H56V151.2a40.57,40.57,0,0,0,8,.8,40,40,0,0,0,32-16,40,40,0,0,0,64,0,40,40,0,0,0,32,16,40.57,40.57,0,0,0,8-.8Zm4.93-75.8a8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48v8A24,24,0,0,1,204.93,132.2Z" },
+    { link:"https://wkaiw.oqzgb.com/shop/WYNB66", name:"副网址", desc:"质量数据号",
+      icon:"M128,24C74.17,24,32,48.6,32,80v96c0,31.4,42.17,56,96,56s96-24.6,96-56V80C224,48.6,181.83,24,128,24Zm80,104c0,9.62-7.88,19.43-21.61,26.92C170.93,163.35,150.19,168,128,168s-42.93-4.65-58.39-13.08C55.88,147.43,48,137.62,48,128V111.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64ZM69.61,53.08C85.07,44.65,105.81,40,128,40s42.93,4.65,58.39,13.08C200.12,60.57,208,70.38,208,80s-7.88,19.43-21.61,26.92C170.93,115.35,150.19,120,128,120s-42.93-4.65-58.39-13.08C55.88,99.43,48,89.62,48,80S55.88,60.57,69.61,53.08ZM186.39,202.92C170.93,211.35,150.19,216,128,216s-42.93-4.65-58.39-13.08C55.88,195.43,48,185.62,48,176V159.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64V176C208,185.62,200.12,195.43,186.39,202.92Z" },
+    { link:"https://new.818fka.com/shop/WYTGNB", name:"低价TG", desc:"低价TG账号",
+      icon:"M235.58,128.84,160,91.06V48a32,32,0,0,0-64,0V91.06L20.42,128.84A8,8,0,0,0,16,136v32a8,8,0,0,0,9.57,7.84L96,161.76v18.93L82.34,194.34A8,8,0,0,0,80,200v32a8,8,0,0,0,11,7.43l37-14.81,37,14.81A8,8,0,0,0,176,232V200a8,8,0,0,0-2.34-5.66L160,180.69V161.76l70.43,14.08A8,8,0,0,0,240,168V136A8,8,0,0,0,235.58,128.84ZM224,158.24l-70.43-14.08A8,8,0,0,0,144,152v32a8,8,0,0,0,2.34,5.66L160,203.31v16.87l-29-11.61a8,8,0,0,0-5.94,0L96,220.18V203.31l13.66-13.65A8,8,0,0,0,112,184V152a8,8,0,0,0-9.57-7.84L32,158.24v-17.3l75.58-37.78A8,8,0,0,0,112,96V48a16,16,0,0,1,32,0V96a8,8,0,0,0,4.42,7.16L224,140.94Z" },
+    { link:"https://www.wysjh.com/", name:"查询工具", desc:"查询账号状态", lower:true, iconRight:true,
+      icon:"M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" },
+    { link:"https://www.wysjh.com/jw/", name:"禁玩器", desc:"禁玩游戏", iconRight:true,
+      icon:"M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.27,47,25.53a8,8,0,0,0,4.2,0c1-.26,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm0,72c0,37.07-13.66,67.16-40.6,89.42A129.3,129.3,0,0,1,128,223.62a128.25,128.25,0,0,1-38.92-21.81C61.82,179.51,48,149.3,48,112l0-56,160,0Z" },
+    { link:"https://1815900244.mshare.123pan.cn/123pan/DRJLVv-HVmY?notoken=1", name:"上号器", desc:"安卓登录工具", lower:true,
+      icon:"M176,148a12,12,0,1,1-12-12A12,12,0,0,1,176,148ZM92,136a12,12,0,1,0,12,12A12,12,0,0,0,92,136Zm148,24v24a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V161.13A113.38,113.38,0,0,1,51.4,78.72L26.34,53.66A8,8,0,0,1,37.66,42.34L63.82,68.5a111.43,111.43,0,0,1,128.55-.19l26-26a8,8,0,0,1,11.32,11.32L204.82,78.5c.75.71,1.5,1.43,2.24,2.17A111.25,111.25,0,0,1,240,160Zm-16,0a96,96,0,0,0-96-96h-.34C74.91,64.18,32,107.75,32,161.13V184H224Z" },
+    { link:"http://bt.sjhwang.xyz/shq.html", name:"上号器", desc:"iOS登录工具",
+      icon:"M223.3,169.59a8.07,8.07,0,0,0-2.8-3.4C203.53,154.53,200,134.64,200,120c0-17.67,13.47-33.06,21.5-40.67a8,8,0,0,0,0-11.62C208.82,55.74,187.82,48,168,48a72.2,72.2,0,0,0-40,12.13,71.56,71.56,0,0,0-90.71,9.09A74.63,74.63,0,0,0,16,123.4a127.06,127.06,0,0,0,40.14,89.73A39.8,39.8,0,0,0,83.59,224h87.68a39.84,39.84,0,0,0,29.12-12.57,125,125,0,0,0,17.82-24.6C225.23,174,224.33,172,223.3,169.59Zm-34.63,30.94a23.76,23.76,0,0,1-17.4,7.47H83.59a23.82,23.82,0,0,1-16.44-6.51A111.14,111.14,0,0,1,32,123,58.5,58.5,0,0,1,48.65,80.47,54.81,54.81,0,0,1,88,64h.78A55.45,55.45,0,0,1,123,76.28a8,8,0,0,0,10,0A55.44,55.44,0,0,1,168,64a70.64,70.64,0,0,1,36,10.35c-13,14.52-20,30.47-20,45.65,0,23.77,7.64,42.73,22.18,55.3A105.82,105.82,0,0,1,188.67,200.53ZM128.23,30A40,40,0,0,1,167,0h1a8,8,0,0,1,0,16h-1a24,24,0,0,0-23.24,18,8,8,0,1,1-15.5-4Z" },
+    { link:"https://wynb.pastehtml.dev/", name:"辅助", desc:"全网耳机",
+      icon:"M152,96H104a8,8,0,0,0-8,8v48a8,8,0,0,0,8,8h48a8,8,0,0,0,8-8V104A8,8,0,0,0,152,96Zm-8,48H112V112h32Zm88,0H216V112h16a8,8,0,0,0,0-16H216V56a16,16,0,0,0-16-16H160V24a8,8,0,0,0-16,0V40H112V24a8,8,0,0,0-16,0V40H56A16,16,0,0,0,40,56V96H24a8,8,0,0,0,0,16H40v32H24a8,8,0,0,0,0,16H40v40a16,16,0,0,0,16,16H96v16a8,8,0,0,0,16,0V216h32v16a8,8,0,0,0,16,0V216h40a16,16,0,0,0,16-16V160h16a8,8,0,0,0,0-16Zm-32,56H56V56H200v95.87s0,.09,0,.13,0,.09,0,.13V200Z" }
+];
+(function(){
+    var wrap = document.getElementById('gridContainer');
+    if(!wrap || !CARDS.length) return;
+    var html = '';
+    for(var i = 0; i < CARDS.length; i++){
+        var c = CARDS[i];
+        var cls = 'grid-card' + (c.lower ? ' card-lower' : '');
+        var iconCls = 'card-icon' + (c.iconRight ? ' card-icon-right' : '');
+        html += '<div class="' + cls + '" data-link="' + c.link + '">' +
+            '<span class="' + iconCls + '"><svg width="24" height="24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="' + c.icon + '"/></svg></span>' +
+            '<button type="button" class="card-copy" aria-label="复制网址"><svg class="copy-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ok-ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button>' +
+            '<div class="card-main-text">' + c.name + '</div>' +
+            '<div class="card-sub-text">' + c.desc + '</div>' +
+        '</div>';
+    }
+    wrap.innerHTML = html;
+})();
+
+/* ================= 缓存常量 ================= */
+var VISIT_KEY = 'wuyuan_visited_7d';
+var THEME_DARK_KEY = 'wuyuan_dark_theme';
+var SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
+var DARK_MODE_DAYS = 3 * 24 * 60 * 60 * 1000;
+
+function isFirstVisit(){
+    try{
+        var v = JSON.parse(localStorage.getItem(VISIT_KEY) || 'null');
+        if(!v || !v.t) return true;
+        if(Date.now() - v.t >= SEVEN_DAYS){ localStorage.removeItem(VISIT_KEY); return true; }
+        return false;
+    }catch(e){ return true; }
+}
+function getDarkThemeCache(){
+    try{
+        var data = JSON.parse(localStorage.getItem(THEME_DARK_KEY)||'null');
+        if(!data || !data.t) return null;
+        if(Date.now() - data.t >= DARK_MODE_DAYS){
+            localStorage.removeItem(THEME_DARK_KEY);
+            return null;
+        }
+        return true;
+    }catch(err){
+        localStorage.removeItem(THEME_DARK_KEY);
+        return null;
+    }
+}
+function setDarkThemeCache(){
+    localStorage.setItem(THEME_DARK_KEY, JSON.stringify({t:Date.now()}));
+}
+function clearDarkThemeCache(){
+    localStorage.removeItem(THEME_DARK_KEY);
+}
+window.addEventListener('pagehide', function(){
+    try {
+        var v = JSON.parse(localStorage.getItem(VISIT_KEY) || 'null');
+        if(v && v.t && (Date.now() - v.t >= SEVEN_DAYS)) localStorage.removeItem(VISIT_KEY);
+    } catch (e) {}
+    try {
+        var d = JSON.parse(localStorage.getItem(THEME_DARK_KEY)||'null');
+        if(d && d.t && (Date.now() - d.t >= DARK_MODE_DAYS)) localStorage.removeItem(THEME_DARK_KEY);
+    }catch(e){}
+});
+
+/* ================= PWA Manifest 动态注入（内联，无需额外文件） ================= */
+(function(){
+    try{
+        var iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#0a0a10"/><circle cx="96" cy="96" r="42" fill="none" stroke="#d6b96a" stroke-width="10"/><circle cx="96" cy="96" r="14" fill="#d6b96a"/></svg>';
+        var manifest = {
+            name: "无怨导航页",
+            short_name: "无怨",
+            description: "私域工具导航 · 一站直达",
+            start_url: ".",
+            scope: ".",
+            display: "standalone",
+            orientation: "portrait",
+            background_color: "#0a0a10",
+            theme_color: "#d6b96a",
+            lang: "zh-CN",
+            icons: [
+                {
+                    src: "data:image/svg+xml," + encodeURIComponent(iconSvg),
+                    sizes: "any",
+                    type: "image/svg+xml",
+                    purpose: "any"
+                },
+                {
+                    src: "data:image/svg+xml," + encodeURIComponent(iconSvg),
+                    sizes: "any",
+                    type: "image/svg+xml",
+                    purpose: "maskable"
+                }
+            ]
+        };
+        var dataUri = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
+        var link = document.createElement('link');
+        link.rel = 'manifest';
+        link.href = dataUri;
+        document.head.appendChild(link);
+
+        /* iOS 手动添加主屏幕时使用的图标 */
+        var appleIcon = document.createElement('link');
+        appleIcon.rel = 'apple-touch-icon';
+        appleIcon.href = 'data:image/svg+xml,' + encodeURIComponent(iconSvg);
+        document.head.appendChild(appleIcon);
+    }catch(e){}
+})();
+
+/* ================= 圆形加载特效 ================= */
+(function(){
+    var splash = document.getElementById('splash');
+    if (!splash) return;
+    if(!isFirstVisit()){
+        splash.remove();
+        return;
+    }
+    setTimeout(function(){
+        splash.classList.add('done');
+        setTimeout(function(){ splash.remove(); }, 500);
+        try { localStorage.setItem(VISIT_KEY, JSON.stringify({ t: Date.now() })); } catch (e) {}
+    }, 2500);
+})();
+
+/* ================= 主题切换 ================= */
+(function(){
+    var toggle = document.getElementById('darkModeToggle');
+    if(getDarkThemeCache() === true){
+        document.body.classList.add('dark-mode');
+        toggle.classList.add('active');
+    }
+    toggle.onclick = function(){
+        this.classList.toggle('active');
+        var isDarkNow = document.body.classList.toggle('dark-mode');
+        if(isDarkNow){
+            setDarkThemeCache();
+        }else{
+            clearDarkThemeCache();
+        }
+        document.body.dispatchEvent(new Event('themechange'));
+    };
+})();
+
+/* ================= 免责弹窗（同一会话内返回不再重复弹窗；下次重新进入再确认） ================= */
+(function(){
+    var modal = document.getElementById('announcementModal');
+    var agree = document.getElementById('agreeCheck');
+    var enter = document.getElementById('enterBtn');
+    var disX = document.getElementById('disX');
+    var AGREE_SESSION_KEY = 'wuyuan_agree_check_session';
+    function exitWebsite(){
+        try{ var w = window.open('', '_self'); if(w) w.close(); }catch(e){}
+        window.location.href = 'about:blank';
+    }
+    if(disX){ disX.addEventListener('click', exitWebsite); }
+
+    function isAgreed(){
+        try{ return sessionStorage.getItem(AGREE_SESSION_KEY) === '1'; }catch(e){ return false; }
+    }
+    function applyAgreed(){
+        modal.classList.add('hide');
+        document.body.classList.add('entered');
+    }
+
+    if(isAgreed()){
+        /* 本次会话已确认过：直接进入，不再重复弹窗 */
+        applyAgreed();
+    }
+    agree.addEventListener('change', function(){
+        enter.disabled = !agree.checked;
+        try{ sessionStorage.setItem(AGREE_SESSION_KEY, agree.checked ? '1' : '0'); }catch(e){}
+    });
+    enter.addEventListener('click', function(){
+        if (enter.disabled) return;
+        applyAgreed();
+        try{ sessionStorage.setItem(AGREE_SESSION_KEY, '1'); }catch(e){}
+        safePlayMusic();
+    });
+    /* 从外部网址返回 / 刷新：本次会话已确认过则自动进入，无需再次点击 */
+    window.addEventListener('pageshow', function(){
+        if(isAgreed()){
+            if(!document.body.classList.contains('entered')) applyAgreed();
+        }else{
+            enter.disabled = !agree.checked;
+        }
+    });
+})();
+
+/* ================= 音乐播放器 ================= */
+var MUSIC_LIST = [
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Anzap.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Hai%20Phut.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Immortals.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Wrap%20me%20in%20plastic.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E9%9B%A8%E8%BF%87%E5%90%8E%E7%9A%84%E9%A3%8E%E6%99%AF.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E9%9B%A8%E7%88%B1.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E8%BF%98%E6%98%AF%E4%BC%9A%E6%83%B3%E4%BD%A0.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E7%BD%97%E6%9B%BC%E8%92%82%E7%9A%84%E7%88%B1%E6%83%85.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E7%BA%A2%E8%89%B2%E9%AB%98%E8%B7%9F%E9%9E%8B.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%BD%AE%E6%B1%90.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%A8%B1%E8%8A%B1%E6%A0%91%E4%B8%8B%E7%9A%84%E7%BA%A6%E5%AE%9A.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%BF%83%E5%A2%99.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%BF%83%E4%BC%BC%E7%83%9F%E7%81%AB.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%B9%BB%E6%98%BC.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%A0%95.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/nightcrusing.mp3"
+];
+var currentMusicIndex = -1;
+var audio = document.getElementById('miniMusicAudio');
+var playBtn = document.getElementById('musicPlayBtn');
+var discBtn = document.getElementById('musicDiscBtn');
+var progressBar = document.getElementById('musicProgress');
+var thumb = document.getElementById('musicProgressThumb');
+var currentTimeDom = document.getElementById('currentTime');
+var totalTimeDom = document.getElementById('totalTime');
+var musicPlaying = false;
+function musicName(url){
+    try{
+        var decoded = decodeURIComponent(url);
+        var name = decoded.split('/音乐/').pop() || decoded.split('/').pop() || url;
+        return name.replace(/\.mp3$/i, '');
+    }catch(e){
+        var n = url.split('/').pop() || url;
+        return n.replace(/\.mp3$/i, '');
+    }
+}
+function getRandomMusicIndex(){
+    return Math.floor(Math.random() * MUSIC_LIST.length);
+}
+function playMusic(index, wantPlay){
+    if(!audio || index < 0) return;
+    currentMusicIndex = index;
+    audio.src = MUSIC_LIST[index];
+    audio.preload = "auto";
+    audio.load();
+    if(wantPlay) doPlay();
+}
+function doPlay(){
+    audio.play().then(function(){
+    }).catch(function(){
+        playBtn.classList.remove('playing');
+        if(discBtn) discBtn.classList.remove('playing');
+        musicPlaying = false;
+    });
+}
+function playRandomNext(){
+    playMusic(getRandomMusicIndex(), true);
+}
+function formatTime(seconds){
+    if(isNaN(seconds) || !isFinite(seconds)) return "0:00";
+    var m = Math.floor(seconds / 60);
+    var s = Math.floor(seconds % 60);
+    return m + ":" + String(s).padStart(2,'0');
+}
+function safePlayMusic(){
+    if(!audio) return;
+    if(currentMusicIndex < 0){ playRandomNext(); return; }
+    doPlay();
+}
+audio.addEventListener('playing', function(){
+    audioFailCount = 0; /* 播放成功，重置失败计数 */
+    document.body.classList.add('music-playing'); /* 暂停背景动画，避免与频谱叠加卡顿 */
+    playBtn.classList.add('playing');
+    if(discBtn) discBtn.classList.add('playing');
+    musicPlaying = true;
+});
+audio.addEventListener('pause', function(){
+    document.body.classList.remove('music-playing');
+    playBtn.classList.remove('playing');
+    if(discBtn) discBtn.classList.remove('playing');
+    musicPlaying = false;
+});
+var wasPlayingBeforeHide = false;
+document.addEventListener('visibilitychange', function(){
+    if(document.hidden){
+        if(musicPlaying && audio && !audio.paused){
+            wasPlayingBeforeHide = true;
+            audio.pause();
+        }else{
+            wasPlayingBeforeHide = false;
+        }
+    }else{
+        if(wasPlayingBeforeHide && audio && currentMusicIndex >= 0 && audio.paused){
+            doPlay();
+        }
+        wasPlayingBeforeHide = false;
+    }
+});
+/* ================= 选歌弹窗 ================= */
+var musicModal = document.getElementById('musicModal');
+var musicList = document.getElementById('musicList');
+var musicModalClose = document.getElementById('musicModalClose');
+function renderMusicList(){
+    musicList.innerHTML = '';
+    MUSIC_LIST.forEach(function(url, i){
+        var isPlaying = (i === currentMusicIndex) && musicPlaying;
+        var item = document.createElement('div');
+        item.className = 'music-item' + (i === currentMusicIndex ? ' active' : '');
+        item.innerHTML = '<span class="mi-left"><span class="playing-mark">' + (isPlaying ? '▶ ' : '') + '</span><span class="music-name">' + musicName(url) + '</span></span>' + (isPlaying ? '<span class="playing-tag">播放中</span>' : '');
+        item.addEventListener('click', function(){
+            if(i === currentMusicIndex){
+                if(musicPlaying){
+                    audio.pause();
+                }else{
+                    doPlay();
+                }
+                closeMusicModal();
+            }else{
+                playMusic(i, true);
+                closeMusicModal();
+            }
+        });
+        musicList.appendChild(item);
+    });
+}
+function openMusicModal(){
+    renderMusicList();
+    musicModal.style.display = 'flex';
+}
+function closeMusicModal(){
+    musicModal.style.display = 'none';
+}
+discBtn.addEventListener('click', function(){
+    openMusicModal();
+});
+playBtn.addEventListener('click', function(){
+    if(musicPlaying){
+        audio.pause();
+    }else{
+        safePlayMusic();
+    }
+});
+musicModalClose.addEventListener('click', closeMusicModal);
+musicModal.addEventListener('click', function(e){
+    if(e.target === musicModal) closeMusicModal();
+});
+function setProgressUI(pct){
+    if(!progressBar || !thumb) return;
+    if(isNaN(pct)) pct = 0;
+    pct = Math.max(0, Math.min(100, pct));
+    progressBar.style.width = pct + "%";
+    thumb.style.left = pct + "%";
+}
+setProgressUI(0);
+audio.addEventListener('timeupdate', function(){
+    var percent = (audio.currentTime / audio.duration) * 100;
+    if(!isNaN(percent)) setProgressUI(percent);
+    currentTimeDom.innerText = formatTime(audio.currentTime);
+    totalTimeDom.innerText = formatTime(audio.duration);
+});
+audio.addEventListener('loadedmetadata', function(){
+    totalTimeDom.innerText = formatTime(audio.duration);
+});
+audio.addEventListener('ended', function(){
+    playRandomNext();
+});
+/* ================= 全局提示（音乐失败计数等场景使用） ================= */
+var playerToastEl = document.getElementById('playerToast');
+var playerToastTimer = null;
+function showToast(msg, ms){
+    if(!playerToastEl) return;
+    playerToastEl.textContent = msg;
+    playerToastEl.classList.add('show');
+    clearTimeout(playerToastTimer);
+    playerToastTimer = setTimeout(function(){ playerToastEl.classList.remove('show'); }, ms || 1200);
+}
+
+/* 音乐加载失败计数与重试上限：CDN 异常时最多重试 MAX_AUDIO_RETRY 次，避免无限循环换歌 */
+var audioFailCount = 0;
+var MAX_AUDIO_RETRY = 3;
+audio.addEventListener('error', function(){
+    audioFailCount++;
+    if(audioFailCount <= MAX_AUDIO_RETRY){
+        showToast('音乐加载失败（第 ' + audioFailCount + '/' + MAX_AUDIO_RETRY + ' 次），自动重试中…', 1500);
+        playRandomNext();
+    }else{
+        showToast('音乐加载失败 ' + audioFailCount + ' 次，已停止自动重试', 2600);
+        audioFailCount = 0;
+        musicPlaying = false;
+        playBtn.classList.remove('playing');
+        if(discBtn) discBtn.classList.remove('playing');
+        try{ audio.pause(); }catch(e){}
+    }
+});
+
+/* ================= 音乐频谱跳动动画（性能优化版：30fps 节流写入） ================= */
+(function(){
+    var spectrumEl = document.getElementById('musicSpectrum');
+    if(!spectrumEl) return;
+    var BAR_COUNT = 32;
+    var bars = [];
+    var barEls = [];
+    var hueOffsets = [];
+    for(var i = 0; i < BAR_COUNT; i++){
+        var bar = document.createElement('div');
+        bar.className = 'bar';
+        spectrumEl.appendChild(bar);
+        barEls.push(bar);
+        bars.push({ current: 3, target: 3, velocity: 0 });
+        hueOffsets.push(i * (360 / BAR_COUNT * 0.55));
+    }
+    var animating = false;
+    var rafId = null;
+    var beatTimer = null;
+    var maxH = 18;
+    var minH = 3;
+    var hue = 0;
+    var lastWrite = 0;   /* DOM 写入节流：约 30fps，减少重排/重绘次数 */
+    var FRAME_MS = 33;
+    function isDark(){ return document.body.classList.contains('dark-mode'); }
+    function writeBar(i, h, dim){
+        barEls[i].style.height = h.toFixed(1) + 'px';
+        if(isDark()){
+            var light = dim ? 30 + (h/maxH)*6 : 45 + (h/maxH)*22;
+            barEls[i].style.background = 'hsl(' + Math.round((hue + hueOffsets[i]) % 360) + ',92%,' + light.toFixed(0) + '%)';
+        } else if(barEls[i].style.background){
+            barEls[i].style.background = '';
+        }
+    }
+    function getBaseHeight(index){
+        var center = (BAR_COUNT - 1) / 2;
+        var dist = Math.abs(index - center) / center;
+        var factor = 1 - dist * dist * 0.6;
+        return minH + (maxH - minH) * factor;
+    }
+    function updateTargets(){
+        for(var i = 0; i < BAR_COUNT; i++){
+            var base = getBaseHeight(i);
+            var rand = 0.3 + Math.random() * 0.7;
+            bars[i].target = minH + (base - minH) * rand;
+        }
+    }
+    function beatDrop(){
+        var intensity = 0.5 + Math.random() * 0.5;
+        for(var i = 0; i < BAR_COUNT; i++){
+            var base = getBaseHeight(i);
+            var boost = (base - minH) * intensity;
+            bars[i].target = Math.min(maxH, bars[i].target + boost * 0.6);
+        }
+    }
+    function animate(now){
+        if(!animating) return;
+        hue = (hue + 1.4) % 360;
+        /* 物理计算每帧执行（纯 JS，开销极小） */
+        for(var i = 0; i < BAR_COUNT; i++){
+            var b = bars[i];
+            var diff = b.target - b.current;
+            b.velocity += diff * 0.25;
+            b.velocity *= 0.72;
+            b.current += b.velocity;
+            if(b.current < minH) b.current = minH;
+            if(b.current > maxH) b.current = maxH;
+        }
+        /* DOM 样式写入节流到约 30fps */
+        if(now - lastWrite >= FRAME_MS){
+            lastWrite = now;
+            for(var j = 0; j < BAR_COUNT; j++){
+                writeBar(j, bars[j].current, false);
+            }
+        }
+        rafId = requestAnimationFrame(animate);
+    }
+    function startSpectrum(){
+        if(animating) return;
+        animating = true;
+        lastWrite = 0;
+        updateTargets();
+        animate(performance.now());
+        beatTimer = setInterval(function(){
+            updateTargets();
+            if(Math.random() < 0.25) beatDrop();
+        }, 180);
+    }
+    function stopSpectrum(){
+        animating = false;
+        if(rafId){
+            cancelAnimationFrame(rafId);
+            rafId = null;
+        }
+        if(beatTimer){
+            clearInterval(beatTimer);
+            beatTimer = null;
+        }
+        var fall = setInterval(function(){
+            var allMin = true;
+            for(var i = 0; i < BAR_COUNT; i++){
+                bars[i].current += (minH - bars[i].current) * 0.15;
+                if(bars[i].current > minH + 0.5) allMin = false;
+                writeBar(i, Math.max(minH, bars[i].current), true);
+            }
+            if(allMin){
+                clearInterval(fall);
+                for(var j = 0; j < BAR_COUNT; j++){
+                    bars[j].current = minH;
+                    bars[j].target = minH;
+                    bars[j].velocity = 0;
+                }
+            }
+        }, 30);
+    }
+    audio.addEventListener('playing', startSpectrum);
+    audio.addEventListener('pause', stopSpectrum);
+    audio.addEventListener('ended', stopSpectrum);
+    for(var k = 0; k < BAR_COUNT; k++){
+        writeBar(k, minH, true);
+    }
+    document.body.addEventListener('themechange', function(){
+        for(var i = 0; i < BAR_COUNT; i++){
+            if(isDark()){
+                writeBar(i, bars[i].current, !animating);
+            } else if(barEls[i].style.background){
+                barEls[i].style.background = '';
+            }
+        }
+    });
+})();
+
+/* ================= 音乐交互增强：可拖动进度条 / 滚轮音量 / 长按横滑跳转 ================= */
+(function(){
+    var track = document.querySelector('.music-progress-track');
+    var spectrum = document.getElementById('musicSpectrum');
+    var toastEl = document.getElementById('playerToast');
+    var toastTimer = null;
+    if(!track || !spectrum) return;
+
+    function showToast(msg, ms){
+        if(!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, ms || 1200);
+    }
+    function clamp01(v){ return Math.max(0, Math.min(1, v)); }
+    function seekToRatio(r){
+        if(!audio || !audio.duration || isNaN(audio.duration)) return;
+        audio.currentTime = r * audio.duration;
+        setProgressUI(r * 100);
+        currentTimeDom.innerText = formatTime(audio.currentTime);
+        totalTimeDom.innerText = formatTime(audio.duration);
+    }
+    function ratioFromClientX(x, el){
+        var rect = el.getBoundingClientRect();
+        return clamp01((x - rect.left) / rect.width);
+    }
+
+    /* ---------- 进度条：点击 / 拖动跳转 ---------- */
+    var trackDragging = false;
+    track.addEventListener('pointerdown', function(e){
+        trackDragging = true;
+        try{ track.setPointerCapture(e.pointerId); }catch(err){}
+        seekToRatio(ratioFromClientX(e.clientX, track));
+        e.preventDefault();
+    });
+    track.addEventListener('pointermove', function(e){
+        if(!trackDragging) return;
+        seekToRatio(ratioFromClientX(e.clientX, track));
+    });
+    function endTrackDrag(e){
+        if(!trackDragging) return;
+        trackDragging = false;
+        try{ track.releasePointerCapture(e.pointerId); }catch(err){}
+    }
+    track.addEventListener('pointerup', endTrackDrag);
+    track.addEventListener('pointercancel', endTrackDrag);
+    track.addEventListener('click', function(e){
+        seekToRatio(ratioFromClientX(e.clientX, track));
+    });
+
+    /* ---------- 频谱区：滚轮调音量 ---------- */
+    spectrum.addEventListener('wheel', function(e){
+        e.preventDefault();
+        if(!audio) return;
+        var step = e.deltaY < 0 ? 0.05 : -0.05;
+        audio.volume = Math.max(0, Math.min(1, Math.round((audio.volume + step) * 100) / 100));
+        showToast('音量 ' + Math.round(audio.volume * 100) + '%', 900);
+    }, {passive: false});
+
+    /* ---------- 频谱区：长按横滑 / 拖动跳转 ---------- */
+    var seekStartX = 0, seekStarted = false, seekDragging = false, seekLong = false;
+    var seekLongTimer = null, seekPointerId = null;
+    function seekByClientX(x){
+        if(!audio || !audio.duration || isNaN(audio.duration)) return;
+        var r = ratioFromClientX(x, spectrum.parentElement);
+        seekToRatio(r);
+        showToast(formatTime(audio.currentTime) + ' / ' + formatTime(audio.duration), 1000);
+    }
+    spectrum.addEventListener('pointerdown', function(e){
+        seekStarted = true;
+        seekDragging = false;
+        seekLong = false;
+        seekStartX = e.clientX;
+        seekPointerId = e.pointerId;
+        try{ spectrum.setPointerCapture(seekPointerId); }catch(err){}
+        clearTimeout(seekLongTimer);
+        seekLongTimer = setTimeout(function(){
+            seekLong = true;
+            spectrum.classList.add('longpressing');
+            showToast('按住左右滑动跳转', 900);
+        }, 400);
+    });
+    spectrum.addEventListener('pointermove', function(e){
+        if(!seekStarted) return;
+        var dx = e.clientX - seekStartX;
+        if(!seekDragging && Math.abs(dx) > 10){
+            seekDragging = true;
+            clearTimeout(seekLongTimer);
+            spectrum.classList.remove('longpressing');
+        }
+        if(seekDragging || seekLong){
+            seekByClientX(e.clientX);
+            e.preventDefault();
+        }
+    });
+    function endSpectrumDrag(e){
+        if(!seekStarted) return;
+        seekStarted = false;
+        clearTimeout(seekLongTimer);
+        spectrum.classList.remove('longpressing');
+        seekDragging = false;
+        seekLong = false;
+        if(seekPointerId != null){
+            try{ spectrum.releasePointerCapture(seekPointerId); }catch(err){}
+            seekPointerId = null;
+        }
+    }
+    spectrum.addEventListener('pointerup', endSpectrumDrag);
+    spectrum.addEventListener('pointercancel', endSpectrumDrag);
+    spectrum.addEventListener('pointerleave', function(e){
+        if(seekStarted && (seekDragging || seekLong)) endSpectrumDrag(e);
+    });
+})();
+
+/* ================= 回到顶部浮动按钮 ================= */
+(function(){
+    var btn = document.getElementById('backTopBtn');
+    if(!btn) return;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var threshold = 120;
+    function getScrollY(){
+        return window.pageYOffset || window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    }
+    function updateThreshold(){
+        var viewH = window.innerHeight || document.documentElement.clientHeight || 0;
+        var maxScroll = Math.max(0, (document.documentElement.scrollHeight || document.body.scrollHeight || 0) - viewH);
+        /* 页面几乎无法滚动时不出现；可滚动时约滚动 1/3 屏即淡入 */
+        if(maxScroll <= 0){
+            threshold = 0;
+        }else{
+            threshold = Math.max(60, Math.min(Math.round(viewH * 0.33), Math.round(maxScroll * 0.4)));
+        }
+    }
+    function onScroll(){
+        var show = threshold > 0 && getScrollY() >= threshold;
+        btn.classList.toggle('show', show);
+    }
+    window.addEventListener('scroll', onScroll, {passive: true, capture: true});
+    document.addEventListener('scroll', onScroll, {passive: true, capture: true});
+    window.addEventListener('resize', function(){ updateThreshold(); onScroll(); }, {passive: true});
+    window.addEventListener('load', function(){ updateThreshold(); onScroll(); }, {passive: true});
+    updateThreshold();
+    onScroll();
+    btn.addEventListener('click', function(){
+        if(reduced){
+            window.scrollTo(0, 0);
+            return;
+        }
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+})();
+
+/* ================= 教程按钮 ================= */
+document.getElementById('tutorialBtn').addEventListener('click', function(){
+    window.open("https://www.axureshow.com/project/445pq3tu/","_blank");
+});
+
+/* ================= 卡片点击 ================= */
+document.querySelectorAll('.grid-card').forEach(function(item){
+    item.addEventListener('click', function(){
+        var url = this.dataset.link;
+        if(!url) return;
+        setTimeout(function(){
+            var win = window.open(url,"_blank");
+            if(!win){ location.href = url; }
+        },600);
+    });
+    /* 动画播完用 class 锁定终态，不再写 inline animation:'none'（搜索过滤时卡片会闪） */
+    item.addEventListener('animationend', function(){
+        this.classList.add('card-done');
+    }, {once: true});
+    /* 兜底：动画因 reduced-motion/后台标签等原因未触发 animationend 时，也确保卡片最终可见 */
+    setTimeout(function(){ item.classList.add('card-done'); }, 1600);
+});
+
+/* ================= 卡片复制网址（宽屏端） ================= */
+(function(){
+    var copyBtns = document.querySelectorAll('.card-copy');
+    if(!copyBtns.length) return;
+    var toastEl = document.getElementById('playerToast');
+    var toastTimer = null;
+    function showToast(html, ms){
+        if(!toastEl) return;
+        toastEl.innerHTML = html;
+        toastEl.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, ms || 1200);
+    }
+    function fallbackCopy(text){
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '0';
+        ta.style.left = '0';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+        var ok = false;
+        try{ ok = document.execCommand('copy'); }catch(e){ ok = false; }
+        document.body.removeChild(ta);
+        return ok;
+    }
+    copyBtns.forEach(function(btn){
+        btn.addEventListener('click', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var card = btn.closest('.grid-card');
+            var url = card ? (card.getAttribute('data-link') || '') : '';
+            if(!url){ showToast('没有可复制的链接'); return; }
+            var copiedTimer = null;
+            function markCopied(){
+                btn.classList.add('copied');
+                clearTimeout(copiedTimer);
+                copiedTimer = setTimeout(function(){ btn.classList.remove('copied'); }, 1200);
+                showToast('已复制网址');
+            }
+            function done(){ markCopied(); }
+            if(navigator.clipboard && navigator.clipboard.writeText){
+                navigator.clipboard.writeText(url).then(done, function(){
+                    if(fallbackCopy(url)) done();
+                    else showToast('复制失败');
+                });
+            }else{
+                if(fallbackCopy(url)) done();
+                else showToast('复制失败');
+            }
+        });
+    });
+})();
+
+/* ================= 搜索过滤 + 快捷打开 ================= */
+(function(){
+    var input = document.getElementById('searchInput');
+    var clearBtn = document.getElementById('searchClear');
+    var empty = document.getElementById('searchEmpty');
+    var quick = document.getElementById('searchQuick');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.grid-card'));
+    if(!input || !cards.length) return;
+
+    /* 预先把每张卡片的可搜索文本算好（名称/描述 + 跳转网址），避免每次按键都重新取 innerText */
+    var cardText = cards.map(function(c){
+        return ((c.innerText || '') + ' ' + (c.getAttribute('data-link') || '')).toLowerCase();
+    });
+
+    var lastQuick = [];   /* 下拉里的可打开项（Enter 打开悬停项，否则打开第一项） */
+    var lastHover = -1;
+
+    function escapeHtml(s){
+        return String(s).replace(/[&<>"']/g, function(ch){
+            return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch];
+        });
+    }
+    function openUrl(url){
+        if(!url) return;
+        var win = window.open(url, '_blank');
+        if(!win){ location.href = url; }
+    }
+    function cardName(card){
+        var el = card.querySelector('.card-main-text');
+        return el ? el.innerText : '工具';
+    }
+    function cardDesc(card){
+        var el = card.querySelector('.card-sub-text');
+        return el ? el.innerText : '';
+    }
+    /* 网址识别：尽可能覆盖所有网址形态（协议/域名/IP/localhost/www/端口/路径/查询/哈希），
+       命中后回车即在新标签页直接打开该网址 */
+    function looksLikeUrl(s){
+        if(!s) return false;
+        if(/^https?:\/\//i.test(s)) return true;                          /* 带协议 */
+        if(/^\/\//.test(s)) return true;                                  /* 协议相对 //xxx.com */
+        if(/^www\./i.test(s)) return true;                                /* www. 开头 */
+        if(/^localhost(:\d+)?((\/|\?|#)\S*)?$/i.test(s)) return true;     /* localhost[:port][/path] */
+        if(/^\d{1,3}(\.\d{1,3}){3}(:\d+)?((\/|\?|#)\S*)?$/.test(s)) return true; /* IP 地址 */
+        /* 域名形式：xxx.yyy[.zzz...][:port][/path][?query][#hash] */
+        return /^[a-zA-Z0-9][-a-zA-Z0-9]*(\.[a-zA-Z0-9-]+)+(:\d+)?((\/|\?|#)\S*)?$/.test(s)
+            && /\.[a-zA-Z]{2,}/.test(s);
+    }
+
+    function addQuickItem(o){
+        var idx = lastQuick.length;
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sq-item' + (o.tag === 'url' ? ' sq-url' : '');
+        btn.setAttribute('role', 'option');
+        btn.innerHTML =
+            '<span class="sq-idx">' + (o.tag === 'url' ? '↗' : (idx + 1)) + '</span>' +
+            '<span class="sq-name">' + escapeHtml(o.name) + '</span>' +
+            '<span class="sq-desc">' + escapeHtml(o.desc) + '</span>' +
+            '<span class="sq-go">↗</span>';
+        btn.addEventListener('mouseenter', function(){
+            lastHover = idx;
+            var items = quick.querySelectorAll('.sq-item');
+            for(var i = 0; i < items.length; i++) items[i].classList.toggle('hover', i === idx);
+        });
+        btn.addEventListener('mouseleave', function(){
+            if(lastHover === idx){ lastHover = -1; btn.classList.remove('hover'); }
+        });
+        btn.addEventListener('click', function(e){
+            e.preventDefault();
+            openUrl(o.url);
+        });
+        quick.appendChild(btn);
+        lastQuick.push(o);
+    }
+
+    function buildQuick(){
+        var q = input.value.trim();
+        quick.innerHTML = '';
+        lastQuick = [];
+        lastHover = -1;
+        if(!q){ quick.classList.remove('show'); return; }
+        quick.classList.add('show');
+
+        /* 1) 数字快捷：弹出对应卡片按钮，回车即打开 */
+        var digit = /^([1-8])$/.exec(q);
+        if(digit){
+            var idx = parseInt(digit[1], 10) - 1;
+            var card = cards[idx];
+            if(card){
+                addQuickItem({ url: card.getAttribute('data-link') || '', name: cardName(card), desc: cardDesc(card), tag: 'card' });
+            }else{
+                quick.innerHTML = '<div class="sq-empty">没有第 ' + digit[1] + ' 个工具</div>';
+            }
+            return;
+        }
+
+        /* 2) 网址识别：弹出“打开网址”按钮，回车直接打开该网址 */
+        if(looksLikeUrl(q)){
+            var target = q;
+            if(/^\/\//.test(target)) target = 'https:' + target;          /* //xxx.com → https://xxx.com */
+            else if(!/^https?:\/\//i.test(target)) target = 'https://' + target; /* 补全协议 */
+            addQuickItem({ url: target, name: '打开网址', desc: q, tag: 'url' });
+            return;
+        }
+
+        /* 3) 关键词/网址关键词搜索：最多弹出前 5 个匹配卡片按钮 */
+        var ql = q.toLowerCase();
+        var hit = 0;
+        for(var i = 0; i < cards.length && hit < 5; i++){
+            if(cardText[i].indexOf(ql) !== -1){
+                addQuickItem({
+                    url: cards[i].getAttribute('data-link') || '',
+                    name: cardName(cards[i]),
+                    desc: cardDesc(cards[i]) + ' · ' + (cards[i].getAttribute('data-link') || ''),
+                    tag: 'card'
+                });
+                hit++;
+            }
+        }
+        if(!hit) quick.innerHTML = '<div class="sq-empty">没有找到相关工具</div>';
+    }
+
+    function applyFilter(){
+        var q = input.value.trim().toLowerCase();
+        var digitHit = /^[1-8]$/.test(q);
+        var isUrl = looksLikeUrl(q);
+        var visible = 0;
+        cards.forEach(function(card, i){
+            var match;
+            if(!q){
+                match = true;
+            }else if(digitHit){
+                /* 数字快捷：1~8 对应第 N 张卡片 */
+                match = (i === parseInt(q, 10) - 1);
+            }else{
+                match = cardText[i].indexOf(q) !== -1;
+            }
+            if(match){
+                card.style.display = '';
+                card.classList.toggle('search-hit', digitHit && i === parseInt(q, 10) - 1);
+                visible++;
+                /* 搜索命中时用 card-done 类锁定终态，不写 inline animation:none（避免搜索过滤时卡片闪动） */
+                if(q) card.classList.add('card-done');
+            }else{
+                card.style.display = 'none';
+                card.classList.remove('search-hit');
+            }
+        });
+        /* 输入的是网址时不再提示“没有找到相关工具”，由快捷打开按钮直接接管 */
+        empty.classList.toggle('show', visible === 0 && q.length > 0 && !isUrl);
+    }
+
+    /* 回车：打开快捷面板第一项（数字→对应卡片 / 网址→该网址 / 关键词→第一个匹配卡片） */
+    input.addEventListener('keydown', function(e){
+        if(e.key === 'Escape'){
+            input.value = '';
+            applyFilter();
+            buildQuick();
+            input.blur();
+            return;
+        }
+        if(e.key !== 'Enter') return;
+        var target = null;
+        if(lastHover >= 0 && lastQuick[lastHover]) target = lastQuick[lastHover];
+        else if(lastQuick.length) target = lastQuick[0];
+        if(target){
+            e.preventDefault();
+            openUrl(target.url);
+        }
+    });
+
+    input.addEventListener('input', function(){ applyFilter(); buildQuick(); });
+
+    clearBtn.addEventListener('click', function(){
+        input.value = '';
+        applyFilter();
+        buildQuick();
+        input.focus();
+    });
+
+    /* 点击搜索框外部时收起快捷面板 */
+    document.addEventListener('click', function(e){
+        var box = document.querySelector('.search-box');
+        if(box && !box.contains(e.target)) quick.classList.remove('show');
+    });
+})();
+
+/* ================= 版本更新检测（已修复：新用户也会写入当前版本） ================= */
+(function(){
+    var siteVersion = "20261004_v1";
+    var STORAGE_KEY = "wuyuan_site_version";
+    var localVer = localStorage.getItem(STORAGE_KEY);
+    if(localVer !== siteVersion){
+        localStorage.setItem(STORAGE_KEY, siteVersion);
+        /* 只有当之前存在旧版本时才刷新；新用户首次访问不刷新 */
+        if(localVer !== null) window.location.reload();
+    }
+})();
+
+/* ================= 隐藏彩蛋：连点标题 5 次 ================= */
+(function(){
+    var titleEl = document.querySelector('.header-title');
+    if(!titleEl) return;
+
+    var NEED = 5;
+    var GAP = 800;
+    var COOLDOWN = 4200;
+    var count = 0, lastT = 0, busy = false;
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function isInteractive(el){
+        return !!(el && el.closest && el.closest(
+            '.mini-music-player, .toggle-button, .tutorial-box, ' +
+            '.music-modal-overlay, .modal-overlay'
+        ));
+    }
+
+    function tapRing(x,y){
+        if(reduced) return;
+        var r = document.createElement('div');
+        r.className = 'egg-tap-ring';
+        r.style.left = x + 'px';
+        r.style.top = y + 'px';
+        document.body.appendChild(r);
+        setTimeout(function(){ r.remove(); }, 600);
+    }
+
+    titleEl.addEventListener('click', function(e){
+        if(busy) return;
+        if(isInteractive(e.target)) return;
+
+        var now = Date.now();
+        if(now - lastT > GAP) count = 0;
+        lastT = now;
+        count++;
+
+        var x = e.clientX || window.innerWidth/2;
+        var y = e.clientY || window.innerHeight/2;
+        tapRing(x,y);
+
+        titleEl.classList.remove('egg-tap');
+        void titleEl.offsetWidth;
+        titleEl.classList.add('egg-tap');
+
+        if(count >= NEED){
+            count = 0; busy = true;
+            runEgg(x,y);
+            setTimeout(function(){ busy = false; }, COOLDOWN);
+        }
+    });
+
+    function runEgg(x,y){
+        document.body.style.setProperty('--egg-x', x+'px');
+        document.body.style.setProperty('--egg-y', y+'px');
+        document.body.classList.add('egg-flash');
+        if(!reduced) document.body.classList.add('egg-shake');
+        setTimeout(function(){
+            document.body.classList.remove('egg-flash');
+            document.body.classList.remove('egg-shake');
+        },1500);
+
+        var layer = document.createElement('div');
+        layer.className = 'egg-text-layer';
+        layer.innerHTML = '<div class="egg-title">无怨</div><div class="egg-sub">愿你所遇 · 皆无怨</div>';
+        document.body.appendChild(layer);
+        requestAnimationFrame(function(){ layer.classList.add('play'); });
+        setTimeout(function(){ layer.remove(); },3800);
+
+        if(reduced) return;
+
+        var canvas = document.createElement('canvas');
+        canvas.className = 'egg-canvas';
+        document.body.appendChild(canvas);
+        var ctx = canvas.getContext('2d');
+        var dpr = Math.min(window.devicePixelRatio||1,2);
+        var W = window.innerWidth, H = window.innerHeight;
+        canvas.width = Math.floor(W*dpr);
+        canvas.height = Math.floor(H*dpr);
+        canvas.style.width = W+'px';
+        canvas.style.height = H+'px';
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+
+        var particles = [], waves = [], cx = x, cy = y, i;
+
+        for(i=0;i<120;i++){
+            var a = Math.random()*Math.PI*2;
+            var sp = 2 + Math.random()*9;
+            particles.push({
+                x:cx, y:cy,
+                vx:Math.cos(a)*sp, vy:Math.sin(a)*sp-1.2,
+                r:1+Math.random()*2.6, life:1,
+                decay:0.008+Math.random()*0.012,
+                hue:38+Math.random()*18, sat:85+Math.random()*15,
+                lig:62+Math.random()*22, twinkle:Math.random()*Math.PI*2
+            });
+        }
+        for(i=0;i<40;i++){
+            particles.push({
+                x:cx+(Math.random()-0.5)*160, y:cy+(Math.random()-0.5)*60,
+                vx:(Math.random()-0.5)*1.4, vy:-1.4-Math.random()*3,
+                r:0.8+Math.random()*1.6, life:1,
+                decay:0.005+Math.random()*0.008,
+                hue:44+Math.random()*14, sat:90, lig:70+Math.random()*20,
+                twinkle:Math.random()*Math.PI*2
+            });
+        }
+        waves.push({r:4,max:Math.max(W,H)*0.75,life:1,speed:9, width:4,   delay:0});
+        waves.push({r:4,max:Math.max(W,H)*0.55,life:1,speed:7, width:2.5, delay:6});
+        waves.push({r:4,max:Math.max(W,H)*0.95,life:1,speed:11,width:1.6, delay:12});
+
+        var start = performance.now(), last = start, running = true;
+
+        function frame(now){
+            if(!running) return;
+            var dt = Math.min(now-last,40)/16.67; last = now;
+            var elapsed = now-start;
+
+            ctx.clearRect(0,0,W,H);
+            ctx.globalCompositeOperation = 'lighter';
+
+            for(var w=waves.length-1;w>=0;w--){
+                var wv = waves[w];
+                if(wv.delay>0){ wv.delay -= dt; continue; }
+                wv.r += wv.speed*dt;
+                wv.life = 1 - wv.r/wv.max;
+                if(wv.life<=0){ waves.splice(w,1); continue; }
+                ctx.beginPath();
+                ctx.arc(cx,cy,wv.r,0,Math.PI*2);
+                ctx.strokeStyle = 'hsla(44,92%,72%,'+(wv.life*0.55).toFixed(3)+')';
+                ctx.lineWidth = Math.max(0.6, wv.width*wv.life);
+                ctx.stroke();
+            }
+
+            for(var p=particles.length-1;p>=0;p--){
+                var pt = particles[p];
+                pt.vy += 0.13*dt;
+                pt.vx *= Math.pow(0.985,dt);
+                pt.vy *= Math.pow(0.988,dt);
+                pt.x += pt.vx*dt;
+                pt.y += pt.vy*dt;
+                pt.life -= pt.decay*dt;
+                pt.twinkle += 0.22*dt;
+                if(pt.life<=0 || pt.y>H+40){ particles.splice(p,1); continue; }
+                var tw = 0.65+0.35*Math.sin(pt.twinkle);
+                var alpha = Math.max(0,pt.life)*tw;
+                ctx.beginPath();
+                ctx.arc(pt.x,pt.y,pt.r,0,Math.PI*2);
+                ctx.fillStyle = 'hsla('+pt.hue.toFixed(0)+','+pt.sat.toFixed(0)+'%,'+
+                                pt.lig.toFixed(0)+'%,'+alpha.toFixed(3)+')';
+                ctx.fill();
+            }
+
+            var glow = Math.max(0, 1-elapsed/900);
+            if(glow>0){
+                var g = ctx.createRadialGradient(cx,cy,0,cx,cy,220);
+                g.addColorStop(0,  'hsla(46,100%,86%,'+(glow*0.85).toFixed(3)+')');
+                g.addColorStop(.4, 'hsla(44,95%,68%,' +(glow*0.32).toFixed(3)+')');
+                g.addColorStop(1,  'hsla(44,95%,60%,0)');
+                ctx.fillStyle = g;
+                ctx.fillRect(cx-240,cy-240,480,480);
+            }
+
+            ctx.globalCompositeOperation = 'source-over';
+
+            if(particles.length===0 && waves.length===0){
+                running = false;
+                canvas.classList.add('fade');
+                setTimeout(function(){ canvas.remove(); },600);
+                return;
+            }
+            requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+    }
+})();
+</script>
+</body>
+</html>
