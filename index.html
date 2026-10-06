@@ -2,10 +2,10 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta http-equiv="Cache-Control" content="max-age=2592000">
+<meta http-equiv="Pragma" content="cache">
+<meta http-equiv="Expires" content="2592000">
 <title>无怨导航页</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0a11'/%3E%3Ccircle cx='16' cy='16' r='7' fill='none' stroke='%23d6b96a' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='%23d6b96a'/%3E%3C/svg%3E">
 <!-- PWA / 添加到主屏幕 -->
@@ -109,7 +109,7 @@ body.dark-mode .sheen-b{animation:none;opacity:0}
 .bg-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");opacity:.05;mix-blend-mode:overlay}
 .bg-vignette{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,transparent 50%,rgba(2,3,8,.74) 100%)}
 .splash{
-    position:fixed;inset:0;z-index:2000;
+    position:fixed;inset:0;z-index:4000;
     display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;
     background:
         radial-gradient(ellipse 120% 70% at 50% 30%, rgba(226,190,120,.16), transparent 60%),
@@ -128,6 +128,77 @@ body.dark-mode .sheen-b{animation:none;opacity:0}
 }
 .splash .hint{font-size:12px;color:rgba(255,255,255,.45);letter-spacing:.1em}
 @keyframes spin{to{transform:rotate(360deg)}}
+/* ================= 顶部走马灯公告栏 ================= */
+.top-announce{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 36px;
+    background: rgba(16,13,8,.94);
+    border-bottom: 1px solid rgba(214,185,106,.32);
+    display: flex;
+    align-items: center;
+    z-index: 3000;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translateY(-100%);
+    transition: transform .35s ease, opacity .35s ease;
+}
+body.announce-on .top-announce{
+    opacity: 1;
+    transform: none;
+}
+.announce-x{
+    width: 38px;
+    height: 36px;
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: var(--gold);
+    font-size: 15px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color .2s ease, background .2s ease;
+}
+.announce-x:hover{ color: #fff; background: rgba(255,255,255,.06); }
+.announce-x:active{ transform: scale(.9); }
+.announce-marquee{
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.announce-track{
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    will-change: transform;
+    animation: announceMarquee 20s linear infinite;
+}
+.announce-text{
+    padding-right: 6em;
+    font-size: 13px;
+    letter-spacing: .06em;
+    color: rgba(255,255,255,.88);
+}
+@keyframes announceMarquee{
+    from{ transform: translateX(0); }
+    to{ transform: translateX(-50%); }
+}
+/* 公告栏显示期间：移动端音乐播放器下移贴住公告栏；宽屏端搜索栏与播放器下移齐平 */
+body.announce-on .mini-music-player{ top: -12px; }
+@media screen and (min-width: 600px){
+    body.announce-on .search-wrap{ top: 36px; }
+    body.announce-on .mini-music-player{ top: -52px; }
+}
 .header-title{
     text-align: center;
     font-size: 54px;
@@ -304,6 +375,34 @@ body.entered .search-wrap{
 .search-box input:not(:placeholder-shown) ~ .search-clear{
     display: flex;
 }
+/* 粘贴按钮：输入框为空时显示在右侧，点击粘贴剪贴板内容；输入文字/网址后自动隐藏换成 ✕ */
+.search-paste{
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: var(--gold);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
+    transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.search-paste:hover{
+    background: rgba(214,185,106,.2);
+    box-shadow: 0 0 10px rgba(214,185,106,.35);
+}
+.search-paste:active{transform: scale(0.9);}
+.search-paste svg{
+    width: 13px;
+    height: 13px;
+    display: block;
+}
+.search-box input:placeholder-shown ~ .search-paste{ display: flex; }
+.search-box input:not(:placeholder-shown) ~ .search-paste{ display: none; }
 .search-empty{
     text-align: center;
     padding: 40px 20px;
@@ -587,7 +686,7 @@ body.entered .grid-card.card-done{opacity:1; animation:none;}
     position: absolute;
     top: -54px;
     right: 0;
-    width: 270px;
+    width: 338px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(10px);
@@ -596,13 +695,14 @@ body.entered .grid-card.card-done{opacity:1; animation:none;}
     z-index: 99;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
 }
+/* 播放/暂停按钮：加长为胶囊形，两侧容纳上一首/下一首按钮 */
 .music-play-btn{
-    width: 32px;
+    width: 56px;
     height: 32px;
-    border-radius: 50%;
+    border-radius: 999px;
     border: none;
     background: rgba(255,255,255,0.15);
     color: #fff;
@@ -622,6 +722,31 @@ body.entered .grid-card.card-done{opacity:1; animation:none;}
 .music-play-btn.playing .icon-play{display: none;}
 .music-play-btn.playing .icon-pause{display: block;}
 .music-play-btn:active{transform: scale(0.9);}
+/* 上一首 / 下一首按钮 */
+.music-skip-btn{
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s, background .2s, box-shadow .2s;
+}
+.music-skip-btn svg{
+    width: 12px;
+    height: 12px;
+    display: block;
+}
+.music-skip-btn:active{transform: scale(0.9);}
+.music-skip-btn:hover{
+    background: rgba(214,185,106,.25);
+    box-shadow: 0 0 10px rgba(214,185,106,.3);
+}
 .music-progress-wrap{
     flex: 1;
     height: 26px;
@@ -640,18 +765,73 @@ body.entered .grid-card.card-done{opacity:1; animation:none;}
     margin-bottom: 4px;
     pointer-events: none;
 }
+/* 音谱改用 Canvas 单画布渲染（替代 32 根 DOM 音柱，降低重绘开销） */
+.music-spectrum canvas{
+    display: block;
+    width: 100%;
+    height: 100%;
+}
 .music-spectrum .bar{
     flex: 1;
     min-width: 1px;
     background: rgba(255,255,255,0.85);
     border-radius: 1px;
-    height: 3px;
+    height: 100%;
+    transform-origin: bottom center;
+    transform: scaleY(0.18);
+}
+/* 展开模式：进度条、进度圆点与时间数字全部隐藏，音谱变长 */
+.mini-music-player.expanded .music-progress-track,
+.mini-music-player.expanded .music-progress-thumb,
+.mini-music-player.expanded .music-time-current,
+.mini-music-player.expanded .music-time-total{ display: none; }
+.mini-music-player.expanded .music-progress-wrap{
+    justify-content: center;
+    height: 34px;
+    margin-top: -2px;
+}
+.mini-music-player.expanded .music-spectrum{
+    height: 32px;
+    margin-bottom: 0;
 }
 body.entered .music-spectrum .bar{
     box-shadow: 0 0 4px rgba(214,185,106,0.35);
 }
 body.dark-mode .music-spectrum .bar{
     box-shadow: none;
+}
+/* ================= 暗色模式：跳转网址按钮边界加亮 + 光效 ================= */
+body.dark-mode .grid-card{
+    border-color: rgba(214,185,106,.5);
+    box-shadow: 0 0 0 1px rgba(214,185,106,.22), 0 0 16px rgba(214,185,106,.18), 0 8px 28px rgba(0,0,0,.45);
+    transition: opacity .55s ease, transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+body.dark-mode .grid-card:hover{
+    border-color: rgba(214,185,106,.9);
+    box-shadow: 0 0 0 1px rgba(214,185,106,.45), 0 0 24px rgba(214,185,106,.35), 0 8px 28px rgba(0,0,0,.45);
+}
+body.dark-mode .grid-card.search-hit{
+    border-color: rgba(214,185,106,1);
+    box-shadow: 0 0 0 2px rgba(214,185,106,.5), 0 0 22px rgba(214,185,106,.4), 0 8px 28px rgba(0,0,0,.45);
+}
+body.dark-mode .search-quick{
+    border-color: rgba(214,185,106,.55);
+    box-shadow: 0 0 0 1px rgba(214,185,106,.18), 0 0 18px rgba(214,185,106,.22), 0 18px 44px rgba(0,0,0,.5);
+}
+body.dark-mode .sq-item{
+    box-shadow: inset 0 0 0 1px rgba(214,185,106,.22);
+}
+body.dark-mode .sq-item:hover,
+body.dark-mode .sq-item.hover{
+    background: rgba(214,185,106,.16);
+    box-shadow: inset 0 0 0 1px rgba(214,185,106,.65), 0 0 12px rgba(214,185,106,.3);
+}
+/* 暗色模式下粘贴按钮与切歌按钮也补一圈金色边界 */
+body.dark-mode .search-paste{
+    box-shadow: inset 0 0 0 1px rgba(214,185,106,.35);
+}
+body.dark-mode .music-skip-btn{
+    box-shadow: inset 0 0 0 1px rgba(214,185,106,.35);
 }
 /* 播放音乐时暂停背景极光/流光/光带动画，降低 CPU/GPU 开销（视觉静止、观感不变） */
 body.music-playing .aurora,
@@ -721,6 +901,18 @@ audio{display: none;}
 .music-item:hover{background:rgba(214,185,106,.12);}
 .music-item.active{border-color:rgba(214,185,106,.6);color:var(--gold);background:rgba(214,185,106,.10);}
 .music-item .playing-mark{color:var(--gold);margin-right:6px;}
+.music-item .mi-avatar{
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,.92);
+    box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.22);
+}
+.music-item .mi-avatar svg{ width: 55%; height: 55%; display: block; }
 .music-modal-close{
     width:100%;margin-top:14px;height:42px;border-radius:12px;border:none;
     background:rgba(255,255,255,.08);color:#fff;font-size:14px;cursor:pointer;
@@ -729,28 +921,42 @@ audio{display: none;}
 .music-modal-close:hover{background:rgba(255,255,255,.14);}
 /* ================= 音乐交互增强（可拖动进度条 / 滚轮音量 / 长按横滑跳转） ================= */
 .music-disc-btn{
-    width: 34px;
-    height: 34px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 1px solid rgba(214,185,106,.55);
-    background: rgba(214,185,106,.12);
-    color: var(--gold);
+    background: transparent;
+    padding: 0;
+    overflow: hidden;
     cursor: pointer;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform .2s, border-color .3s, background .3s;
+    transition: transform .2s, border-color .3s, box-shadow .3s;
 }
 .music-disc-btn:active{transform: scale(.9);}
-.music-disc-btn:hover{border-color: rgba(214,185,106,.9); background: rgba(214,185,106,.2);}
-.music-disc-btn svg{
-    width: 16px;
-    height: 16px;
+.music-disc-btn:hover{border-color: rgba(214,185,106,.9); box-shadow: 0 0 12px rgba(214,185,106,.35);}
+.disc-avatar{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 30% 28%, rgba(255,244,214,.9), transparent 42%),
+        linear-gradient(135deg, #8a6a2f 0%, #d6b96a 45%, #f2e2b0 60%, #8a6a2f 100%);
+    color: #3a2c10;
+    box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
+}
+.disc-avatar svg{
+    width: 46%;
+    height: 46%;
     display: block;
 }
-.music-disc-btn.playing svg{
-    animation: discSpin 4s linear infinite;
+.music-disc-btn.playing .disc-avatar{
+    animation: discSpin 5s linear infinite;
 }
 @keyframes discSpin{to{transform: rotate(360deg)}}
 .music-progress-holder{
@@ -784,6 +990,11 @@ audio{display: none;}
     box-shadow: 0 0 8px rgba(214,185,106,.6);
     transform: translate(-50%, -50%);
     pointer-events: none;
+}
+body.dark-mode .music-progress-thumb{
+    background: #ffffff;
+    border-color: #2a2a2a;
+    box-shadow: 0 0 8px rgba(255,255,255,.55);
 }
 .music-spectrum{
     pointer-events: auto;
@@ -904,6 +1115,17 @@ audio{display: none;}
     }
     .card-copy:active{transform: scale(.9);}
 }
+/* 宽屏 + 横屏：搜索栏加长 0.5 倍（260px → 390px），竖屏保持不变。
+   注意：平板竖屏时点击搜索栏会弹出键盘，视口高度被压缩后宽>高，
+   orientation:landscape 会被误触发，导致搜索栏"变长"并可能与右上角音乐按钮重叠。
+   故横屏加长阈值从 600px 提高到 960px：只有真正宽屏横屏（平板横屏/桌面宽窗口）才加长，
+   平板竖屏 + 键盘（视口宽 600~959px）仍保持 260px 原长度。 */
+@media screen and (min-width: 960px) and (orientation: landscape) {
+    .search-wrap{
+        width: 390px;
+        max-width: 390px;
+    }
+}
 @media screen and (max-width: 599px) {
     :root{
         --card-h: 100px;
@@ -921,15 +1143,24 @@ audio{display: none;}
     .mini-music-player{
         top: -48px;
         right: 0;
-        width: 150px;
+        width: 206px;
         padding: 6px 10px;
         gap:6px;
     }
     .music-play-btn{
+        width: 40px;            /* 长度保持原样，不加大 */
+        height: 28px;           /* 手机端：比原 24px 粗一点，比上一版 34px 细 */
+        border-radius: 999px;
+    }
+    .music-play-btn svg{
+        width: 12px;
+        height: 12px;
+    }
+    .music-skip-btn{
         width: 24px;
         height: 24px;
     }
-    .music-play-btn svg{
+    .music-skip-btn svg{
         width: 11px;
         height: 11px;
     }
@@ -990,19 +1221,43 @@ audio{display: none;}
         position: absolute;
         right: calc(100% + 8px);
         top: 50%;
-        margin-top: -14px;
-        width: 28px;
-        height: 28px;
+        margin-top: -17px;
+        width: 34px;
+        height: 34px;
     }
     .music-disc-btn svg{
-        width: 13px;
-        height: 13px;
+        width: 46%;
+        height: 46%;
+    }
+    .mini-music-player.expanded .music-progress-wrap{
+        height: 28px;
+    }
+    .mini-music-player.expanded .music-spectrum{
+        height: 26px;
     }
     .music-progress-thumb{
         width: 9px;
         height: 9px;
         border-width: 1.5px;
     }
+    /* 移动端：公告栏由"最顶部悬浮"改为放在"标题栏与搜索框之间"（即搜索栏上方），
+       音乐播放按钮保持页面最顶（-48px 原位置，不再被公告栏顶下去）。
+       通过 flex order 调整顺序：标题栏(1) → 公告栏(2) → 搜索栏(3) → 卡片(4) → 空提示(5) → 版权(6)。
+       宽屏端（≥600px）不受影响，仍走原有固定定位逻辑。 */
+    .header-title{ order: 1; }
+    .top-announce{
+        position: static;
+        transform: none;
+        opacity: 1;
+        z-index: 60;
+        order: 2;
+    }
+    body.announce-on .header-title{ margin-bottom: 10px; }
+    body.announce-on .mini-music-player{ top: -48px; }
+    .search-wrap{ order: 3; }
+    .grid-container{ order: 4; }
+    .search-empty{ order: 5; }
+    .copyright{ order: 6; }
 }
 @media (prefers-reduced-motion:reduce){
     .aurora,.stream,.sheen,.sheen-b,.spinner,.gradient-text{animation:none}
@@ -1086,6 +1341,16 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
     <div class="brand">无怨官网 / WUYUAN</div>
     <div class="hint">@WYNBW</div>
 </div>
+<!-- ================= 顶部走马灯公告栏 ================= -->
+<div class="top-announce" id="topAnnounce" aria-hidden="true">
+    <button type="button" class="announce-x" id="announceX" aria-label="关闭公告">✕</button>
+    <div class="announce-marquee">
+        <div class="announce-track" id="announceTrack">
+            <span class="announce-text">✔️欢迎使用无怨导航页 · 本站资源仅供编程技术学习与代码研究交流 · 请合理使用、遵守法律法规 · TG频道：@WYNBW · QQ交流群：1065279347 · 投诉四🐎</span>
+            <span class="announce-text">✔️欢迎使用无怨导航页 · 本站资源仅供编程技术学习与代码研究交流 · 请合理使用、遵守法律法规 · TG频道：@WYNBW · QQ交流群：1065279347 · 投诉四🐎</span>
+        </div>
+    </div>
+</div>
 <div class="bg-fx" aria-hidden="true">
     <div class="aurora aurora-a"></div>
     <div class="aurora aurora-b"></div>
@@ -1143,11 +1408,17 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
 <div class="header-title">
     <div class="mini-music-player" id="miniMusicPlayer" aria-label="背景音乐播放器">
         <button type="button" class="music-disc-btn" id="musicDiscBtn" aria-label="选择音乐">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3v10.55A4 4 0 1 0 11 17V7h6V3H9z"/></svg>
+            <span class="disc-avatar"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3v10.55A4 4 0 1 0 11 17V7h6V3H9z"/></svg></span>
+        </button>
+        <button type="button" class="music-skip-btn" id="musicPrevBtn" aria-label="上一首">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h2v14H7V5z M19 5.5v13L9.5 12 19 5.5z"/></svg>
         </button>
         <button type="button" class="music-play-btn" id="musicPlayBtn" aria-label="播放音乐">
             <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
             <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+        </button>
+        <button type="button" class="music-skip-btn" id="musicNextBtn" aria-label="下一首">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M15 5h2v14h-2V5z M5 5.5v13L14.5 12 5 5.5z"/></svg>
         </button>
         <div class="music-progress-wrap">
             <div class="music-spectrum" id="musicSpectrum"></div>
@@ -1181,6 +1452,9 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
     <div class="search-box">
         <svg class="s-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         <input type="text" id="searchInput" placeholder="搜索工具…（名称或描述）" autocomplete="off" spellcheck="false" aria-label="搜索工具">
+        <button type="button" class="search-paste" id="searchPaste" aria-label="粘贴剪贴板内容">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/><path d="M12 12v4"/><path d="M10 14h4"/></svg>
+        </button>
         <button type="button" class="search-clear" id="searchClear" aria-label="清空搜索">✕</button>
         <div class="search-quick" id="searchQuick" role="listbox" aria-label="快捷打开"></div>
     </div>
@@ -1198,11 +1472,11 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
 <script>
 /* ================= 卡片数据驱动 ================= */
 var CARDS = [
-    { link:"https://new.818fka.com/shop/WYNB66", name:"主网址", desc:"低价数据号",
+    { link:"https://yun.023yjs.com/shop/WUYNB666", name:"主网址1", desc:"低价数据号",
       icon:"M232,96a7.89,7.89,0,0,0-.3-2.2L217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.8A7.89,7.89,0,0,0,24,96h0v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96ZM54,48H202l11.42,40H42.61Zm50,56h48v8a24,24,0,0,1-48,0Zm-16,0v8a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8ZM200,208H56V151.2a40.57,40.57,0,0,0,8,.8,40,40,0,0,0,32-16,40,40,0,0,0,64,0,40,40,0,0,0,32,16,40.57,40.57,0,0,0,8-.8Zm4.93-75.8a8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48v8A24,24,0,0,1,204.93,132.2Z" },
-    { link:"https://wkaiw.oqzgb.com/shop/WYNB66", name:"副网址", desc:"质量数据号",
+    { link:"https://new.818fka.com/shop/WYNB66", name:"副网址2", desc:"备用卡网",
       icon:"M128,24C74.17,24,32,48.6,32,80v96c0,31.4,42.17,56,96,56s96-24.6,96-56V80C224,48.6,181.83,24,128,24Zm80,104c0,9.62-7.88,19.43-21.61,26.92C170.93,163.35,150.19,168,128,168s-42.93-4.65-58.39-13.08C55.88,147.43,48,137.62,48,128V111.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64ZM69.61,53.08C85.07,44.65,105.81,40,128,40s42.93,4.65,58.39,13.08C200.12,60.57,208,70.38,208,80s-7.88,19.43-21.61,26.92C170.93,115.35,150.19,120,128,120s-42.93-4.65-58.39-13.08C55.88,99.43,48,89.62,48,80S55.88,60.57,69.61,53.08ZM186.39,202.92C170.93,211.35,150.19,216,128,216s-42.93-4.65-58.39-13.08C55.88,195.43,48,185.62,48,176V159.36c17.06,15,46.23,24.64,80,24.64s62.94-9.68,80-24.64V176C208,185.62,200.12,195.43,186.39,202.92Z" },
-    { link:"https://new.818fka.com/shop/WYTGNB", name:"低价TG", desc:"低价TG账号",
+    { link:"https://wkaiw.oqzgb.com/shop/WYNB66", name:"副卡网", desc:"质量数据号",
       icon:"M235.58,128.84,160,91.06V48a32,32,0,0,0-64,0V91.06L20.42,128.84A8,8,0,0,0,16,136v32a8,8,0,0,0,9.57,7.84L96,161.76v18.93L82.34,194.34A8,8,0,0,0,80,200v32a8,8,0,0,0,11,7.43l37-14.81,37,14.81A8,8,0,0,0,176,232V200a8,8,0,0,0-2.34-5.66L160,180.69V161.76l70.43,14.08A8,8,0,0,0,240,168V136A8,8,0,0,0,235.58,128.84ZM224,158.24l-70.43-14.08A8,8,0,0,0,144,152v32a8,8,0,0,0,2.34,5.66L160,203.31v16.87l-29-11.61a8,8,0,0,0-5.94,0L96,220.18V203.31l13.66-13.65A8,8,0,0,0,112,184V152a8,8,0,0,0-9.57-7.84L32,158.24v-17.3l75.58-37.78A8,8,0,0,0,112,96V48a16,16,0,0,1,32,0V96a8,8,0,0,0,4.42,7.16L224,140.94Z" },
     { link:"https://www.wysjh.com/", name:"查询工具", desc:"查询账号状态", lower:true, iconRight:true,
       icon:"M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" },
@@ -1233,11 +1507,24 @@ var CARDS = [
     wrap.innerHTML = html;
 })();
 
+/* ================= 统一跳转出口（自检模式下捕获目标 URL 而不真正跳转） ================= */
+window.__SELF_TEST__ = false;
+window.__lastNavUrl = null;
+window.__CARD_CLICK_DELAY = 600;   /* 卡片点击到跳转的延迟，自检时可临时改小 */
+window.__PREFIX_JUMP_DELAY = 180;  /* 前缀跳转去抖，自检时可临时改小 */
+window.__navigate = function(url){
+    if(!url) return;
+    if(window.__SELF_TEST__){
+        window.__lastNavUrl = url;
+        return;
+    }
+    var win = window.open(url, '_blank');
+    if(!win){ location.href = url; }
+};
+
 /* ================= 缓存常量 ================= */
 var VISIT_KEY = 'wuyuan_visited_7d';
-var THEME_DARK_KEY = 'wuyuan_dark_theme';
 var SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
-var DARK_MODE_DAYS = 3 * 24 * 60 * 60 * 1000;
 
 function isFirstVisit(){
     try{
@@ -1247,35 +1534,11 @@ function isFirstVisit(){
         return false;
     }catch(e){ return true; }
 }
-function getDarkThemeCache(){
-    try{
-        var data = JSON.parse(localStorage.getItem(THEME_DARK_KEY)||'null');
-        if(!data || !data.t) return null;
-        if(Date.now() - data.t >= DARK_MODE_DAYS){
-            localStorage.removeItem(THEME_DARK_KEY);
-            return null;
-        }
-        return true;
-    }catch(err){
-        localStorage.removeItem(THEME_DARK_KEY);
-        return null;
-    }
-}
-function setDarkThemeCache(){
-    localStorage.setItem(THEME_DARK_KEY, JSON.stringify({t:Date.now()}));
-}
-function clearDarkThemeCache(){
-    localStorage.removeItem(THEME_DARK_KEY);
-}
 window.addEventListener('pagehide', function(){
     try {
         var v = JSON.parse(localStorage.getItem(VISIT_KEY) || 'null');
         if(v && v.t && (Date.now() - v.t >= SEVEN_DAYS)) localStorage.removeItem(VISIT_KEY);
     } catch (e) {}
-    try {
-        var d = JSON.parse(localStorage.getItem(THEME_DARK_KEY)||'null');
-        if(d && d.t && (Date.now() - d.t >= DARK_MODE_DAYS)) localStorage.removeItem(THEME_DARK_KEY);
-    }catch(e){}
 });
 
 /* ================= PWA Manifest 动态注入（内联，无需额外文件） ================= */
@@ -1322,38 +1585,89 @@ window.addEventListener('pagehide', function(){
     }catch(e){}
 })();
 
-/* ================= 圆形加载特效 ================= */
+/* ================= 圆形加载特效（最长 4 秒硬上限，杜绝无限加载） ================= */
 (function(){
     var splash = document.getElementById('splash');
     if (!splash) return;
+    var removed = false;
+    function hideSplash(){
+        if(removed) return;
+        removed = true;
+        splash.classList.add('done');
+        setTimeout(function(){ if(splash.parentNode) splash.remove(); }, 500);
+        try { localStorage.setItem(VISIT_KEY, JSON.stringify({ t: Date.now() })); } catch (e) {}
+    }
     if(!isFirstVisit()){
         splash.remove();
         return;
     }
-    setTimeout(function(){
-        splash.classList.add('done');
-        setTimeout(function(){ splash.remove(); }, 500);
-        try { localStorage.setItem(VISIT_KEY, JSON.stringify({ t: Date.now() })); } catch (e) {}
-    }, 2500);
+    /* 正常节奏：2.5 秒后淡出 */
+    setTimeout(hideSplash, 2500);
+    /* 硬上限：任何情况下 4 秒内必须结束加载动画，杜绝无限加载 */
+    setTimeout(hideSplash, 4000);
 })();
 
-/* ================= 主题切换 ================= */
+/* ================= 背景自动识别时间（不再使用任何缓存，纯按时间自适应） =================
+   8:00–17:00 亮色黄金界面；17:00–次日 8:00 暗色。
+   已删除原先的 localStorage 主题记忆（3 天缓存会覆盖自动识别导致不生效）。
+   手动点击开关仅在本会话内临时生效，下次刷新页面仍按时间自动选择。 */
 (function(){
     var toggle = document.getElementById('darkModeToggle');
-    if(getDarkThemeCache() === true){
-        document.body.classList.add('dark-mode');
-        toggle.classList.add('active');
+    var manualOverride = null;   /* null=本会话未手动改过；true/false=手动选择的暗/亮 */
+    function applyTheme(dark){
+        document.body.classList.toggle('dark-mode', dark);
+        toggle.classList.toggle('active', dark);
     }
+    function autoTheme(){
+        var h = new Date().getHours();
+        return (h >= 17 || h < 8);
+    }
+    function applyAutoIfNeeded(){
+        if(manualOverride !== null) return;   /* 本会话手动改过则不再自动覆盖 */
+        applyTheme(autoTheme());
+    }
+    /* 初始化：按当前时间自动选择背景 */
+    applyAutoIfNeeded();
     toggle.onclick = function(){
         this.classList.toggle('active');
         var isDarkNow = document.body.classList.toggle('dark-mode');
-        if(isDarkNow){
-            setDarkThemeCache();
-        }else{
-            clearDarkThemeCache();
-        }
+        manualOverride = isDarkNow;
         document.body.dispatchEvent(new Event('themechange'));
     };
+    /* 跨时间边界（17:00 / 8:00）自动校准；仅在没有手动切换过时生效 */
+    setInterval(function(){
+        if(document.hidden) return;
+        applyAutoIfNeeded();
+    }, 60000);
+    document.addEventListener('visibilitychange', function(){
+        if(!document.hidden) applyAutoIfNeeded();
+    });
+})();
+
+/* ================= 顶部走马灯公告栏（点击✕关闭，7 天内不再显示，布局恢复原样） ================= */
+(function(){
+    var box = document.getElementById('topAnnounce');
+    var xBtn = document.getElementById('announceX');
+    var KEY = 'wuyuan_announce_closed';
+    if(!box || !xBtn) return;
+    function closedRecently(){
+        try{
+            var t = parseInt(localStorage.getItem(KEY) || '0', 10);
+            return (Date.now() - t) < 7 * 24 * 60 * 60 * 1000;
+        }catch(e){ return false; }
+    }
+    if(closedRecently()){
+        box.remove();
+        return;
+    }
+    /* 显示公告栏：触发移动端/宽屏端布局下移 */
+    document.body.classList.add('announce-on');
+    box.setAttribute('aria-hidden', 'false');
+    xBtn.addEventListener('click', function(){
+        document.body.classList.remove('announce-on');
+        box.remove();
+        try{ localStorage.setItem(KEY, String(Date.now())); }catch(e){}
+    });
 })();
 
 /* ================= 免责弹窗（同一会话内返回不再重复弹窗；下次重新进入再确认） ================= */
@@ -1511,7 +1825,9 @@ function renderMusicList(){
         var isPlaying = (i === currentMusicIndex) && musicPlaying;
         var item = document.createElement('div');
         item.className = 'music-item' + (i === currentMusicIndex ? ' active' : '');
-        item.innerHTML = '<span class="mi-left"><span class="playing-mark">' + (isPlaying ? '▶ ' : '') + '</span><span class="music-name">' + musicName(url) + '</span></span>' + (isPlaying ? '<span class="playing-tag">播放中</span>' : '');
+        /* 不显示音乐名前的圆形图标，仅保留曲名与播放状态 */
+        item.innerHTML = '<span class="mi-left">' +
+            '<span class="playing-mark">' + (isPlaying ? '▶ ' : '') + '</span><span class="music-name">' + musicName(url) + '</span></span>' + (isPlaying ? '<span class="playing-tag">播放中</span>' : '');
         item.addEventListener('click', function(){
             if(i === currentMusicIndex){
                 if(musicPlaying){
@@ -1535,9 +1851,8 @@ function openMusicModal(){
 function closeMusicModal(){
     musicModal.style.display = 'none';
 }
-discBtn.addEventListener('click', function(){
-    openMusicModal();
-});
+/* 音符/头像按钮：单击直接打开选歌界面 */
+discBtn.addEventListener('click', openMusicModal);
 playBtn.addEventListener('click', function(){
     if(musicPlaying){
         audio.pause();
@@ -1545,6 +1860,19 @@ playBtn.addEventListener('click', function(){
         safePlayMusic();
     }
 });
+/* 上一首 / 下一首：切歌并继续播放（列表循环） */
+var prevBtn = document.getElementById('musicPrevBtn');
+var nextBtn = document.getElementById('musicNextBtn');
+function playPrevTrack(){
+    if(currentMusicIndex < 0){ playRandomNext(); return; }
+    playMusic((currentMusicIndex - 1 + MUSIC_LIST.length) % MUSIC_LIST.length, true);
+}
+function playNextTrack(){
+    if(currentMusicIndex < 0){ playRandomNext(); return; }
+    playMusic((currentMusicIndex + 1) % MUSIC_LIST.length, true);
+}
+if(prevBtn) prevBtn.addEventListener('click', playPrevTrack);
+if(nextBtn) nextBtn.addEventListener('click', playNextTrack);
 musicModalClose.addEventListener('click', closeMusicModal);
 musicModal.addEventListener('click', function(e){
     if(e.target === musicModal) closeMusicModal();
@@ -1598,136 +1926,147 @@ audio.addEventListener('error', function(){
     }
 });
 
-/* ================= 音乐频谱跳动动画（性能优化版：30fps 节流写入） ================= */
+/* ================= 音乐频谱跳动动画（Canvas 单画布渲染版） =================
+   把原来的 32 根 DOM 音柱（每帧写 32 次 style 触发合成/重绘，改快会卡）改为一张 <canvas> 每帧整体绘制：
+   - 每帧只操作一个画布，无 DOM 样式写入、无布局抖动，60fps 全速刷新也不会让整个页面卡顿
+   - 展开/收起音谱时容器高度变化由 ResizeObserver 自动适配
+   视觉样式与原 DOM 版一致（亮色白/金色音柱，暗色模式彩色音柱）。 */
 (function(){
     var spectrumEl = document.getElementById('musicSpectrum');
     if(!spectrumEl) return;
     var BAR_COUNT = 32;
-    var bars = [];
-    var barEls = [];
-    var hueOffsets = [];
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('aria-hidden', 'true');
+    spectrumEl.appendChild(canvas);
+    var ctx2d = canvas.getContext('2d');
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var W = 0, H = 0, containerH = 18;
+    var bars = [], hueOffsets = [];
     for(var i = 0; i < BAR_COUNT; i++){
-        var bar = document.createElement('div');
-        bar.className = 'bar';
-        spectrumEl.appendChild(bar);
-        barEls.push(bar);
         bars.push({ current: 3, target: 3, velocity: 0 });
         hueOffsets.push(i * (360 / BAR_COUNT * 0.55));
     }
-    var animating = false;
-    var rafId = null;
-    var beatTimer = null;
-    var maxH = 18;
-    var minH = 3;
-    var hue = 0;
-    var lastWrite = 0;   /* DOM 写入节流：约 30fps，减少重排/重绘次数 */
-    var FRAME_MS = 33;
-    function isDark(){ return document.body.classList.contains('dark-mode'); }
-    function writeBar(i, h, dim){
-        barEls[i].style.height = h.toFixed(1) + 'px';
-        if(isDark()){
-            var light = dim ? 30 + (h/maxH)*6 : 45 + (h/maxH)*22;
-            barEls[i].style.background = 'hsl(' + Math.round((hue + hueOffsets[i]) % 360) + ',92%,' + light.toFixed(0) + '%)';
-        } else if(barEls[i].style.background){
-            barEls[i].style.background = '';
-        }
+    var animating = false, rafId = null, beatTimer = null;
+    var MIN_H = 3, hue = 0;
+    function resize(){
+        var rect = spectrumEl.getBoundingClientRect();
+        W = Math.max(10, Math.round(rect.width));
+        H = Math.max(10, Math.round(rect.height));
+        containerH = H;
+        canvas.width = Math.floor(W * dpr);
+        canvas.height = Math.floor(H * dpr);
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        if(ctx2d) ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
-    function getBaseHeight(index){
+    resize();
+    if(window.ResizeObserver){
+        new ResizeObserver(resize).observe(spectrumEl);
+    }else{
+        window.addEventListener('resize', resize);
+    }
+    function getMaxH(){ return Math.max(10, containerH); }
+    function isDark(){ return document.body.classList.contains('dark-mode'); }
+    function getBaseHeight(index, mh){
         var center = (BAR_COUNT - 1) / 2;
         var dist = Math.abs(index - center) / center;
         var factor = 1 - dist * dist * 0.6;
-        return minH + (maxH - minH) * factor;
+        return MIN_H + (mh - MIN_H) * factor;
     }
     function updateTargets(){
+        var mh = getMaxH();
         for(var i = 0; i < BAR_COUNT; i++){
-            var base = getBaseHeight(i);
+            var base = getBaseHeight(i, mh);
             var rand = 0.3 + Math.random() * 0.7;
-            bars[i].target = minH + (base - minH) * rand;
+            bars[i].target = MIN_H + (base - MIN_H) * rand;
+            if(bars[i].target > mh) bars[i].target = mh;
         }
     }
     function beatDrop(){
         var intensity = 0.5 + Math.random() * 0.5;
+        var mh = getMaxH();
         for(var i = 0; i < BAR_COUNT; i++){
-            var base = getBaseHeight(i);
-            var boost = (base - minH) * intensity;
-            bars[i].target = Math.min(maxH, bars[i].target + boost * 0.6);
+            var base = getBaseHeight(i, mh);
+            var boost = (base - MIN_H) * intensity;
+            bars[i].target = Math.min(mh, bars[i].target + boost * 0.6);
         }
     }
-    function animate(now){
+    function draw(){
+        if(!ctx2d || !W || !H) return;
+        var mh = getMaxH();
+        ctx2d.clearRect(0, 0, W, H);
+        var gap = 1;
+        var barW = Math.max(1, (W - (BAR_COUNT - 1) * gap) / BAR_COUNT);
+        var dark = isDark();
+        for(var i = 0; i < BAR_COUNT; i++){
+            var hh = Math.max(MIN_H, Math.min(mh, bars[i].current));
+            var ratio = hh / mh;
+            var bh = Math.max(1, ratio * H);
+            if(dark){
+                var light = 45 + ratio * 22;
+                ctx2d.fillStyle = 'hsl(' + Math.round((hue + hueOffsets[i]) % 360) + ',92%,' + light.toFixed(0) + '%)';
+            }else{
+                ctx2d.fillStyle = 'rgba(255,255,255,0.85)';
+            }
+            var x = i * (barW + gap);
+            if(ctx2d.roundRect){
+                ctx2d.beginPath();
+                ctx2d.roundRect(x, H - bh, barW, bh, 1);
+                ctx2d.fill();
+            }else{
+                ctx2d.fillRect(x, H - bh, barW, bh);
+            }
+        }
+    }
+    function animate(){
         if(!animating) return;
         hue = (hue + 1.4) % 360;
-        /* 物理计算每帧执行（纯 JS，开销极小） */
+        var mh = getMaxH();
         for(var i = 0; i < BAR_COUNT; i++){
             var b = bars[i];
             var diff = b.target - b.current;
             b.velocity += diff * 0.25;
             b.velocity *= 0.72;
             b.current += b.velocity;
-            if(b.current < minH) b.current = minH;
-            if(b.current > maxH) b.current = maxH;
+            if(b.current < MIN_H) b.current = MIN_H;
+            if(b.current > mh) b.current = mh;
         }
-        /* DOM 样式写入节流到约 30fps */
-        if(now - lastWrite >= FRAME_MS){
-            lastWrite = now;
-            for(var j = 0; j < BAR_COUNT; j++){
-                writeBar(j, bars[j].current, false);
-            }
-        }
+        draw();
         rafId = requestAnimationFrame(animate);
     }
     function startSpectrum(){
         if(animating) return;
         animating = true;
-        lastWrite = 0;
+        resize();
         updateTargets();
-        animate(performance.now());
+        animate();
         beatTimer = setInterval(function(){
             updateTargets();
             if(Math.random() < 0.25) beatDrop();
-        }, 180);
+        }, 150);
     }
     function stopSpectrum(){
         animating = false;
-        if(rafId){
-            cancelAnimationFrame(rafId);
-            rafId = null;
-        }
-        if(beatTimer){
-            clearInterval(beatTimer);
-            beatTimer = null;
-        }
+        if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
+        if(beatTimer){ clearInterval(beatTimer); beatTimer = null; }
         var fall = setInterval(function(){
             var allMin = true;
             for(var i = 0; i < BAR_COUNT; i++){
-                bars[i].current += (minH - bars[i].current) * 0.15;
-                if(bars[i].current > minH + 0.5) allMin = false;
-                writeBar(i, Math.max(minH, bars[i].current), true);
+                bars[i].current += (MIN_H - bars[i].current) * 0.15;
+                if(bars[i].current > MIN_H + 0.5) allMin = false;
             }
+            draw();
             if(allMin){
                 clearInterval(fall);
-                for(var j = 0; j < BAR_COUNT; j++){
-                    bars[j].current = minH;
-                    bars[j].target = minH;
-                    bars[j].velocity = 0;
-                }
+                for(var j = 0; j < BAR_COUNT; j++){ bars[j].current = MIN_H; bars[j].target = MIN_H; bars[j].velocity = 0; }
             }
         }, 30);
     }
     audio.addEventListener('playing', startSpectrum);
     audio.addEventListener('pause', stopSpectrum);
     audio.addEventListener('ended', stopSpectrum);
-    for(var k = 0; k < BAR_COUNT; k++){
-        writeBar(k, minH, true);
-    }
-    document.body.addEventListener('themechange', function(){
-        for(var i = 0; i < BAR_COUNT; i++){
-            if(isDark()){
-                writeBar(i, bars[i].current, !animating);
-            } else if(barEls[i].style.background){
-                barEls[i].style.background = '';
-            }
-        }
-    });
+    draw();
+    document.body.addEventListener('themechange', draw);
 })();
 
 /* ================= 音乐交互增强：可拖动进度条 / 滚轮音量 / 长按横滑跳转 ================= */
@@ -1828,6 +2167,7 @@ audio.addEventListener('error', function(){
     });
     function endSpectrumDrag(e){
         if(!seekStarted) return;
+        var wasTap = !seekDragging && !seekLong; /* 轻点（未拖动、未长按）视为"点击" */
         seekStarted = false;
         clearTimeout(seekLongTimer);
         spectrum.classList.remove('longpressing');
@@ -1836,6 +2176,11 @@ audio.addEventListener('error', function(){
         if(seekPointerId != null){
             try{ spectrum.releasePointerCapture(seekPointerId); }catch(err){}
             seekPointerId = null;
+        }
+        if(wasTap){
+            /* 点击音谱：进度条与进度数字消失、音谱变长（再点一次恢复原状） */
+            var player = document.getElementById('miniMusicPlayer');
+            if(player) player.classList.toggle('expanded');
         }
     }
     spectrum.addEventListener('pointerup', endSpectrumDrag);
@@ -1894,9 +2239,8 @@ document.querySelectorAll('.grid-card').forEach(function(item){
         var url = this.dataset.link;
         if(!url) return;
         setTimeout(function(){
-            var win = window.open(url,"_blank");
-            if(!win){ location.href = url; }
-        },600);
+            window.__navigate(url);
+        }, window.__CARD_CLICK_DELAY || 600);
     });
     /* 动画播完用 class 锁定终态，不再写 inline animation:'none'（搜索过滤时卡片会闪） */
     item.addEventListener('animationend', function(){
@@ -1963,6 +2307,75 @@ document.querySelectorAll('.grid-card').forEach(function(item){
     });
 })();
 
+/* ================= 搜索框键盘唤醒修复（首屏过渡动画期间点击焦点被吞的兜底） ================= */
+(function(){
+    var input = document.getElementById('searchInput');
+    var box = document.querySelector('.search-box');
+    if(!input || !box) return;
+    /* 点击搜索框任意区域（清空按钮除外）时强制聚焦，确保键盘一定唤醒 */
+    function forceFocus(){
+        if(document.activeElement !== input){
+            try{ input.focus({ preventScroll: true }); }catch(err){ input.focus(); }
+        }
+    }
+    box.addEventListener('pointerup', function(e){
+        if(e.target && e.target.tagName === 'BUTTON') return;
+        setTimeout(forceFocus, 0);
+    });
+    box.addEventListener('click', function(e){
+        if(e.target && e.target.tagName === 'BUTTON') return;
+        forceFocus();
+    });
+    /* 触屏端：touchend 手动聚焦，绕过移动端首次点击聚焦失败的已知问题 */
+    input.addEventListener('touchend', function(){
+        setTimeout(forceFocus, 0);
+    }, { passive: true });
+})();
+
+/* ================= 键盘唤醒诊断（?diag=1 开启：记录首屏时间线与搜索框焦点状态） ================= */
+(function(){
+    if(!/[?&]diag=1/.test(location.search)) return;
+    var log = [];
+    function mark(name, extra){
+        log.push({ t: Math.round(performance.now()), name: name, extra: extra || '' });
+        console.log('[键盘诊断]', Math.round(performance.now()) + 'ms', name, extra || '');
+    }
+    mark('诊断启动');
+    document.addEventListener('DOMContentLoaded', function(){ mark('DOMContentLoaded'); });
+    window.addEventListener('load', function(){ mark('window.load'); });
+    var splash = document.getElementById('splash');
+    if(splash){
+        var obs = new MutationObserver(function(){
+            if(splash.classList.contains('done')) mark('splash.done');
+        });
+        obs.observe(splash, { attributes: true, attributeFilter: ['class'] });
+    }
+    var input = document.getElementById('searchInput');
+    if(input){
+        input.addEventListener('focus', function(){ mark('input.focus'); });
+        input.addEventListener('blur', function(){ mark('input.blur'); });
+    }
+    var firstTapDone = false;
+    document.addEventListener('pointerdown', function(e){
+        var box = document.querySelector('.search-box');
+        if(!box || !box.contains(e.target) || firstTapDone) return;
+        firstTapDone = true;
+        var rect = input.getBoundingClientRect();
+        var cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+        var topEl = document.elementFromPoint(cx, cy);
+        var covered = topEl && topEl !== input && !box.contains(topEl);
+        var active = document.activeElement;
+        mark('首次点击搜索框', 'activeElement=' + (active && active.id ? active.id : (active ? active.tagName : 'none')) +
+            ' | 中心点遮挡=' + (covered ? ((topEl.className || topEl.tagName) + ' z=' + (topEl === input ? 'same' : 'overlay')) : '无'));
+        setTimeout(function(){
+            var a2 = document.activeElement;
+            mark('聚焦后500ms', 'activeElement=' + (a2 && a2.id ? a2.id : (a2 ? a2.tagName : 'none')) +
+                (a2 === input ? ' ✓ 键盘可唤醒' : ' ✗ 焦点丢失'));
+            console.table(log);
+        }, 500);
+    });
+})();
+
 /* ================= 搜索过滤 + 快捷打开 ================= */
 (function(){
     var input = document.getElementById('searchInput');
@@ -1971,6 +2384,20 @@ document.querySelectorAll('.grid-card').forEach(function(item){
     var quick = document.getElementById('searchQuick');
     var cards = Array.prototype.slice.call(document.querySelectorAll('.grid-card'));
     if(!input || !cards.length) return;
+
+    /* 移动端：下拉跳转栏展开时把下方卡片网格往下推，避免与卡片按钮重叠（宽屏端无需处理） */
+    var gridEl = document.getElementById('gridContainer');
+    function syncQuickGap(){
+        if(!gridEl) return;
+        if(window.matchMedia && window.matchMedia('(max-width: 599px)').matches){
+            var open = quick.classList.contains('show');
+            var h = open ? quick.offsetHeight : 0;
+            gridEl.style.marginTop = h ? (h + 12) + 'px' : '';
+        }else{
+            gridEl.style.marginTop = '';
+        }
+    }
+    window.addEventListener('resize', syncQuickGap);
 
     /* 预先把每张卡片的可搜索文本算好（名称/描述 + 跳转网址），避免每次按键都重新取 innerText */
     var cardText = cards.map(function(c){
@@ -1987,8 +2414,7 @@ document.querySelectorAll('.grid-card').forEach(function(item){
     }
     function openUrl(url){
         if(!url) return;
-        var win = window.open(url, '_blank');
-        if(!win){ location.href = url; }
+        window.__navigate(url);
     }
     function cardName(card){
         var el = card.querySelector('.card-main-text');
@@ -2116,16 +2542,26 @@ document.querySelectorAll('.grid-card').forEach(function(item){
         empty.classList.toggle('show', visible === 0 && q.length > 0 && !isUrl);
     }
 
-    /* 回车：打开快捷面板第一项（数字→对应卡片 / 网址→该网址 / 关键词→第一个匹配卡片） */
+    /* 回车：前缀规则优先（WH/KS/HP/GZ/PRO 开头 → 跳转对应网址）；否则打开快捷面板第一项 */
     input.addEventListener('keydown', function(e){
         if(e.key === 'Escape'){
             input.value = '';
             applyFilter();
             buildQuick();
+            syncQuickGap();
+            if(window.__hideAuthCards) window.__hideAuthCards();
             input.blur();
             return;
         }
         if(e.key !== 'Enter') return;
+        if(window.__matchPrefix){
+            var pUrl = window.__matchPrefix(input.value);
+            if(pUrl){
+                e.preventDefault();
+                window.__navigate(pUrl);
+                return;
+            }
+        }
         var target = null;
         if(lastHover >= 0 && lastQuick[lastHover]) target = lastQuick[lastHover];
         else if(lastQuick.length) target = lastQuick[0];
@@ -2135,25 +2571,102 @@ document.querySelectorAll('.grid-card').forEach(function(item){
         }
     });
 
-    input.addEventListener('input', function(){ applyFilter(); buildQuick(); });
+    input.addEventListener('input', function(){ applyFilter(); buildQuick(); syncQuickGap(); });
 
     clearBtn.addEventListener('click', function(){
         input.value = '';
         applyFilter();
         buildQuick();
+        syncQuickGap();
         input.focus();
     });
 
     /* 点击搜索框外部时收起快捷面板 */
     document.addEventListener('click', function(e){
         var box = document.querySelector('.search-box');
-        if(box && !box.contains(e.target)) quick.classList.remove('show');
+        if(box && !box.contains(e.target)){
+            quick.classList.remove('show');
+            syncQuickGap();
+        }
     });
 })();
 
+/* ================= 搜索栏粘贴按钮：点击粘贴剪贴板最新内容 ================= */
+(function(){
+    var pasteBtn = document.getElementById('searchPaste');
+    var input = document.getElementById('searchInput');
+    if(!pasteBtn || !input) return;
+    function applyPaste(text){
+        text = (text || '').trim();
+        if(!text){ showToast('剪贴板为空，请先复制内容'); return; }
+        input.value = text;
+        input.focus();
+        /* 派发 input 事件，让搜索过滤/快捷打开/移动端推挤同步生效 */
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    /* 剪贴板读取：若浏览器未授权，自动申请剪贴板读取权限后再读取 */
+    function requestClipboardRead(){
+        if(!navigator.clipboard || !navigator.clipboard.readText){
+            return Promise.reject(new Error('unsupported'));
+        }
+        if(navigator.permissions && navigator.permissions.query){
+            return navigator.permissions.query({ name: 'clipboard-read' }).then(function(status){
+                if(status.state === 'granted' || status.state === 'prompt'){
+                    /* prompt 状态：调用 readText 即触发浏览器授权弹窗 */
+                    return navigator.clipboard.readText();
+                }
+                return Promise.reject(new Error('denied'));
+            });
+        }
+        return navigator.clipboard.readText();
+    }
+    pasteBtn.addEventListener('click', function(){
+        requestClipboardRead().then(applyPaste, function(err){
+            var msg = (err && err.message === 'unsupported')
+                ? '📋当前浏览器不支持读取剪贴板，请长按输入框手动粘贴'
+                : '📋浏览器未授权读取剪贴板，请长按输入框手动粘贴';
+            showToast(msg, 2000);
+        });
+    });
+})();
+
+/* ================= 搜索栏前缀规则（WH → wysjh.com/wh/；KS/HP/GZ/PRO → xh.wbpy.cn）
+   跳转改为「按回车才触发」；输入时仅用于驱动隐藏授权按钮的显示 ================= */
+(function(){
+    var RULES = [
+        { prefixes: ['WH'], url: 'https://www.wysjh.com/wh/' },
+        { prefixes: ['KS', 'HP', 'GZ', 'PRO'], url: 'http://xh.wbpy.cn/' }
+    ];
+    var AUTH_KEYWORDS = ['授权', '授权码', '授权网址', '授权网站', '质量授权'];
+    function matchPrefix(text){
+        var t = (text || '').trim();
+        if(!t) return null;
+        var upper = t.toUpperCase();
+        for(var i = 0; i < RULES.length; i++){
+            for(var j = 0; j < RULES[i].prefixes.length; j++){
+                var p = RULES[i].prefixes[j];
+                if(upper.length >= p.length && upper.slice(0, p.length) === p) return RULES[i].url;
+            }
+        }
+        return null;
+    }
+    function matchAuthKeywords(text){
+        var t = (text || '').trim();
+        if(!t) return false;
+        for(var i = 0; i < AUTH_KEYWORDS.length; i++){
+            if(t.indexOf(AUTH_KEYWORDS[i]) !== -1) return true;
+        }
+        return false;
+    }
+    window.__matchPrefix = matchPrefix;
+    window.__matchAuthKeywords = matchAuthKeywords;
+})();
+
+/* （隐藏授权卡片模块已移至脚本末尾统一注入，见下方） */
+
 /* ================= 版本更新检测（已修复：新用户也会写入当前版本） ================= */
 (function(){
-    var siteVersion = "20261004_v1";
+    var siteVersion = "20261006_v1";
     var STORAGE_KEY = "wuyuan_site_version";
     var localVer = localStorage.getItem(STORAGE_KEY);
     if(localVer !== siteVersion){
@@ -2339,6 +2852,454 @@ document.querySelectorAll('.grid-card').forEach(function(item){
         requestAnimationFrame(frame);
     }
 })();
+
+/* ================= 禁止页面缩放（配合 viewport user-scalable=no，兜底 iOS/安卓手势缩放） ================= */
+(function(){
+    /* iOS Safari 10+ 忽略 user-scalable=no：拦截双指手势与双击放大 */
+    document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+    document.addEventListener('touchmove', function(e){
+        if(e.touches && e.touches.length > 1) e.preventDefault();
+    }, { passive: false });
+    document.addEventListener('dblclick', function(e){ e.preventDefault(); });
+})();
+
+/* ================= 官网功能自检（?test=1 开启：30 遍循环，每 2 遍输出成功/失败；全程零音乐、零 CDN 音频流量） ================= */
+(function(){
+    if(!/[?&]test=1/.test(location.search)) return;
+    window.__SELF_TEST__ = true;          /* 自检期间所有跳转只捕获目标 URL，绝不真正跳转 */
+    window.__CARD_CLICK_DELAY = 0;        /* 加快卡片跳转检测 */
+    window.__PREFIX_JUMP_DELAY = 10;      /* 加快前缀跳转检测 */
+
+    var TOTAL = 30;                       /* 总检测遍数 */
+    var musicPlayed = false;              /* 任一时刻触发过播放即记为失败 */
+    var audio = document.getElementById('miniMusicAudio');
+
+    /* ---------- 环境准备：静默关掉免责弹窗（不触发音乐）、强制结束开屏动画 ---------- */
+    (function(){
+        var modal = document.getElementById('announcementModal');
+        if(modal && !document.body.classList.contains('entered')){
+            try{ sessionStorage.setItem('wuyuan_agree_check_session', '1'); }catch(e){}
+            modal.classList.add('hide');
+            document.body.classList.add('entered');
+        }
+        var splash = document.getElementById('splash');
+        if(splash && !splash.classList.contains('done')){
+            splash.classList.add('done');
+            setTimeout(function(){ if(splash.parentNode) splash.remove(); }, 60);
+        }
+    })();
+
+    if(audio){
+        audio.addEventListener('play', function(){ musicPlayed = true; });
+        audio.addEventListener('playing', function(){ musicPlayed = true; });
+    }
+
+    /* ---------- 覆盖层 UI ---------- */
+    var overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:rgba(5,6,12,.88);display:flex;align-items:center;justify-content:center;padding:16px;';
+    overlay.innerHTML =
+        '<div style="width:100%;max-width:520px;max-height:92vh;display:flex;flex-direction:column;background:#0d0e17;border:1px solid rgba(214,185,106,.35);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);overflow:hidden;color:#e8e6df;font:13px/1.5 system-ui,sans-serif;">' +
+        '<div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;">' +
+        '<div><b style="color:#d6b96a;font-size:15px;">官网功能自检</b><div style="font-size:11px;color:#9aa0ad;margin-top:2px;">自动检测 30 遍 · 每 2 遍显示结果 · 零音乐播放 · 零 CDN 音频流量</div></div>' +
+        '<button id="__testClose" style="background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;">关闭</button>' +
+        '</div>' +
+        '<div id="__testStatus" style="padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px;color:#cfd3dd;">准备中…</div>' +
+        '<div id="__testLog" style="flex:1;overflow-y:auto;padding:10px 16px;font-family:ui-monospace,Consolas,monospace;font-size:12px;line-height:1.7;"></div>' +
+        '</div>';
+    document.body.appendChild(overlay);
+    var statusEl = overlay.querySelector('#__testStatus');
+    var logEl = overlay.querySelector('#__testLog');
+    overlay.querySelector('#__testClose').addEventListener('click', function(){ overlay.remove(); });
+
+    function log(html){
+        var div = document.createElement('div');
+        div.innerHTML = html;
+        logEl.appendChild(div);
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+    function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+
+    /* ---------- 测试辅助 ---------- */
+    var input = document.getElementById('searchInput');
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.grid-card'));
+    function setInput(v){
+        input.value = v;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+    function pressEnter(){
+        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
+    }
+    function click(sel){ var el = document.querySelector(sel); if(!el) return false; el.click(); return true; }
+    function visibleCards(){
+        var n = 0;
+        cards.forEach(function(c){ if(c.style.display !== 'none') n++; });
+        return n;
+    }
+    var originWrite = navigator.clipboard ? navigator.clipboard.writeText : null;
+    var originRead = navigator.clipboard ? navigator.clipboard.readText : null;
+    var originQuery = navigator.permissions && navigator.permissions.query ? navigator.permissions.query : null;
+    function stubClipboard(writeVal, readVal, permState){
+        if(navigator.clipboard){
+            if(writeVal !== undefined) navigator.clipboard.writeText = function(t){ window.__copied = t; return Promise.resolve(true); };
+            else if(originWrite) navigator.clipboard.writeText = originWrite;
+            if(readVal !== undefined) navigator.clipboard.readText = function(){ return Promise.resolve(readVal); };
+            else if(originRead) navigator.clipboard.readText = originRead;
+        }
+        if(navigator.permissions && navigator.permissions.query){
+            if(permState !== undefined){
+                navigator.permissions.query = function(desc){ window.__permQueried = desc; return Promise.resolve({ state: permState }); };
+            }else if(originQuery){
+                navigator.permissions.query = originQuery;
+            }
+        }
+    }
+
+    /* ---------- 单项检测 ---------- */
+    var BATTERY = [
+        { name: '关键元素存在', fn: function(){
+            var ids = ['searchInput','searchPaste','searchClear','searchQuick','authCardWh','authCardXh','gridContainer','musicPlayBtn','musicPrevBtn','musicNextBtn','musicDiscBtn','miniMusicAudio','musicProgress','musicSpectrum','currentTime','totalTime','darkModeToggle','backTopBtn','playerToast','announcementModal','topAnnounce'];
+            var missing = ids.filter(function(id){ return !document.getElementById(id); });
+            return { ok: missing.length === 0, detail: missing.length ? '缺失: ' + missing.join(',') : '21 个关键元素全部存在' };
+        }},
+        { name: '卡片渲染与链接', fn: function(){
+            if(cards.length !== 8) return { ok: false, detail: '卡片数=' + cards.length + '（应为 8）' };
+            var bad = cards.filter(function(c){ return !/^https?:\/\//.test(c.getAttribute('data-link') || ''); });
+            return { ok: bad.length === 0, detail: '8 张卡片 data-link 均有效' };
+        }},
+        { name: '卡片点击跳转', fn: async function(){
+            window.__lastNavUrl = null;
+            cards[0].click();
+            await sleep(30);
+            var expect = cards[0].getAttribute('data-link');
+            return { ok: window.__lastNavUrl === expect, detail: '捕获=' + window.__lastNavUrl + '，期望=' + expect };
+        }},
+        { name: '卡片复制网址', fn: async function(){
+            window.__copied = null;
+            stubClipboard(true, undefined, undefined);
+            var btn = document.querySelector('.card-copy');
+            if(!btn) return { ok: false, detail: '无复制按钮' };
+            var card = btn.closest('.grid-card');
+            var expect = card.getAttribute('data-link');
+            btn.click();
+            await sleep(20);
+            var ok = window.__copied === expect;
+            stubClipboard(undefined, undefined, undefined);
+            return { ok: ok, detail: ok ? '复制=' + expect : '复制内容=' + window.__copied };
+        }},
+        { name: '搜索过滤', fn: async function(){
+            setInput('查询工具');
+            await sleep(30);
+            var n = visibleCards();
+            setInput('');
+            await sleep(20);
+            return { ok: n === 1, detail: '可见卡片=' + n + '（期望 1）' };
+        }},
+        { name: '数字快捷打开', fn: async function(){
+            window.__lastNavUrl = null;
+            setInput('3');
+            await sleep(30);
+            var quick = document.getElementById('searchQuick');
+            var hasItem = quick && quick.querySelectorAll('.sq-item').length > 0;
+            pressEnter();
+            await sleep(20);
+            setInput('');
+            await sleep(20);
+            var expect = cards[2].getAttribute('data-link');
+            return { ok: hasItem && window.__lastNavUrl === expect, detail: '捕获=' + window.__lastNavUrl + '，期望=' + expect };
+        }},
+        { name: '网址识别打开', fn: async function(){
+            window.__lastNavUrl = null;
+            setInput('example.com');
+            await sleep(30);
+            pressEnter();
+            await sleep(20);
+            setInput('');
+            await sleep(20);
+            return { ok: window.__lastNavUrl === 'https://example.com', detail: '捕获=' + window.__lastNavUrl };
+        }},
+        { name: '前缀跳转 WH', fn: async function(){
+            window.__lastNavUrl = null;
+            setInput('WH10086');
+            pressEnter();
+            await sleep(50);
+            setInput('');
+            await sleep(20);
+            return { ok: window.__lastNavUrl === 'https://www.wysjh.com/wh/', detail: '回车后捕获=' + window.__lastNavUrl };
+        }},
+        { name: '前缀跳转 KS/HP/GZ/PRO', fn: async function(){
+            var samples = ['KS9', 'hp123', 'GZ88', 'PRO66', 'ks-1'];
+            var fails = [];
+            for(var i = 0; i < samples.length; i++){
+                window.__lastNavUrl = null;
+                setInput(samples[i]);
+                pressEnter();
+                await sleep(50);
+                if(window.__lastNavUrl !== 'http://xh.wbpy.cn/') fails.push(samples[i] + '→' + window.__lastNavUrl);
+                setInput('');
+                await sleep(15);
+            }
+            return { ok: fails.length === 0, detail: fails.length ? fails.join('; ') : '5 个样例均跳向 xh.wbpy.cn' };
+        }},
+        { name: '前缀跳转不误跳', fn: async function(){
+            window.__lastNavUrl = null;
+            setInput('WEBHELP');
+            pressEnter();
+            await sleep(50);
+            var jumped = window.__lastNavUrl !== null;
+            setInput('');
+            await sleep(20);
+            return { ok: !jumped, detail: jumped ? '误跳=' + window.__lastNavUrl : '未误跳 ✓' };
+        }},
+        { name: '隐藏卡片-WH显示', fn: async function(){
+            setInput('WH10086');
+            await sleep(30);
+            var c1 = document.getElementById('authCardWh');
+            var c2 = document.getElementById('authCardXh');
+            var ok = c1 && c1.style.display !== 'none' && c2 && c2.style.display === 'none';
+            setInput('');
+            await sleep(20);
+            return { ok: ok, detail: ok ? 'WH 输入仅显示「WH授权网址」卡片 ✓' : 'c1=' + (c1 ? c1.style.display : '缺失') + ' c2=' + (c2 ? c2.style.display : '缺失') };
+        }},
+        { name: '隐藏卡片-KS显示', fn: async function(){
+            setInput('KS9');
+            await sleep(30);
+            var c1 = document.getElementById('authCardWh');
+            var c2 = document.getElementById('authCardXh');
+            var ok = c1 && c1.style.display === 'none' && c2 && c2.style.display !== 'none';
+            setInput('');
+            await sleep(20);
+            return { ok: ok, detail: ok ? 'KS 输入仅显示「质量授权网站」卡片 ✓' : 'c1=' + (c1 ? c1.style.display : '缺失') + ' c2=' + (c2 ? c2.style.display : '缺失') };
+        }},
+        { name: '隐藏卡片-授权词双显', fn: async function(){
+            setInput('授权');
+            await sleep(30);
+            var c1 = document.getElementById('authCardWh');
+            var c2 = document.getElementById('authCardXh');
+            var ok = c1 && c1.style.display !== 'none' && c2 && c2.style.display !== 'none';
+            setInput('');
+            await sleep(20);
+            return { ok: ok, detail: ok ? '「授权」两张隐藏卡片都显示 ✓' : 'c1=' + (c1 ? c1.style.display : '缺失') + ' c2=' + (c2 ? c2.style.display : '缺失') };
+        }},
+        { name: '隐藏卡片-主页隐藏', fn: async function(){
+            setInput('');
+            await sleep(30);
+            var c1 = document.getElementById('authCardWh');
+            var c2 = document.getElementById('authCardXh');
+            return { ok: c1 && c1.style.display === 'none' && c2 && c2.style.display === 'none', detail: '主页/空搜索两张隐藏卡片均不显示 ✓' };
+        }},
+        { name: '隐藏卡片-点击跳转', fn: async function(){
+            window.__lastNavUrl = null;
+            var c1 = document.getElementById('authCardWh');
+            setInput('WH10086');
+            await sleep(30);
+            if(c1) c1.click();
+            await sleep(60);
+            setInput('');
+            await sleep(20);
+            return { ok: window.__lastNavUrl === 'https://www.wysjh.com/wh/', detail: '点击隐藏卡片捕获=' + window.__lastNavUrl };
+        }},
+        { name: '粘贴按钮', fn: async function(){
+            stubClipboard(undefined, 'hello123', 'granted');
+            click('#searchPaste');
+            await sleep(30);
+            var v = input.value;
+            stubClipboard(undefined, undefined, undefined);
+            setInput('');
+            return { ok: v === 'hello123', detail: '粘贴结果=' + v };
+        }},
+        { name: '剪贴板权限申请', fn: async function(){
+            window.__permQueried = null;
+            stubClipboard(undefined, 'CLIP_OK', 'prompt');
+            click('#searchPaste');
+            await sleep(40);
+            var v = input.value;
+            var queried = window.__permQueried && window.__permQueried.name === 'clipboard-read';
+            stubClipboard(undefined, undefined, undefined);
+            setInput('');
+            return { ok: queried && v === 'CLIP_OK', detail: (queried ? '已自动申请权限✓' : '未走权限查询') + '，粘贴=' + v };
+        }},
+        { name: '清空按钮', fn: async function(){
+            setInput('abc');
+            await sleep(20);
+            click('#searchClear');
+            await sleep(15);
+            return { ok: input.value === '', detail: '清空后值=' + JSON.stringify(input.value) };
+        }},
+        { name: '暗色模式切换', fn: function(){
+            var before = document.body.classList.contains('dark-mode');
+            document.getElementById('darkModeToggle').click();
+            var mid = document.body.classList.contains('dark-mode');
+            document.getElementById('darkModeToggle').click();
+            var after = document.body.classList.contains('dark-mode');
+            return { ok: mid !== before && after === before, detail: '前=' + before + ' 中=' + mid + ' 后=' + after };
+        }},
+        { name: '回到顶部按钮', fn: function(){
+            var btn = document.getElementById('backTopBtn');
+            if(!btn) return { ok: false, detail: '按钮缺失' };
+            try{ btn.click(); return { ok: true, detail: '点击无异常' }; }catch(e){ return { ok: false, detail: e.message }; }
+        }},
+        { name: '播放器 UI 存在', fn: function(){
+            var ids = ['musicPlayBtn','musicPrevBtn','musicNextBtn','musicDiscBtn','miniMusicAudio','musicProgress','musicSpectrum','currentTime','totalTime'];
+            var missing = ids.filter(function(id){ return !document.getElementById(id); });
+            return { ok: missing.length === 0, detail: missing.length ? '缺失: ' + missing.join(',') : '播放器组件齐全' };
+        }},
+        { name: '零音乐播放', fn: function(){
+            var ok = !musicPlayed && audio && audio.paused && audio.src === '';
+            return { ok: ok, detail: ok ? '全程未触发播放、audio 保持暂停、未加载任何音频源' : ('musicPlayed=' + musicPlayed + ', paused=' + (audio ? audio.paused : '无audio') + ', src=' + (audio ? audio.src : '无')) };
+        }}
+    ];
+
+    /* ---------- 主循环：30 遍，每 2 遍输出一次结果 ---------- */
+    var roundPass = new Array(TOTAL + 1);
+    var roundFails = {};
+    var failedMap = {};
+    var baseAudioReqs = performance.getEntriesByType('resource').filter(function(e){ return /(7caiyun|\.mp3)/i.test(e.name); }).length;
+
+    (async function(){
+        statusEl.textContent = '检测开始…';
+        var t0 = Date.now();
+        for(var r = 1; r <= TOTAL; r++){
+            statusEl.textContent = '第 ' + r + '/' + TOTAL + ' 遍检测中…';
+            var fails = [];
+            for(var i = 0; i < BATTERY.length; i++){
+                var res;
+                try{
+                    res = await BATTERY[i].fn();
+                }catch(e){
+                    res = { ok: false, detail: '异常: ' + e.message };
+                }
+                if(!res.ok) fails.push(BATTERY[i].name);
+            }
+            roundPass[r] = fails.length === 0;
+            roundFails[r] = fails;
+            if(fails.length) failedMap[fails.join('、')] = (failedMap[fails.join('、')] || 0) + 1;
+            if(r % 2 === 0){
+                var prev = r - 1;
+                var bothFail = (roundFails[prev] || []).concat(fails);
+                log(bothFail.length === 0
+                    ? '<span style="color:#6fcf97;">✓ 第 ' + prev + '–' + r + ' 遍：成功</span>'
+                    : '<span style="color:#ff7a7a;">✗ 第 ' + prev + '–' + r + ' 遍：失败（失败项：' + bothFail.join('、') + '）</span>');
+            }
+        }
+        /* 汇总 */
+        var endAudioReqs = performance.getEntriesByType('resource').filter(function(e){ return /(7caiyun|\.mp3)/i.test(e.name); }).length;
+        var passRounds = 0;
+        for(var k = 1; k <= TOTAL; k++){ if(roundPass[k]) passRounds++; }
+        var errMsg = [];
+        for(var key in failedMap){ errMsg.push(key + '×' + failedMap[key]); }
+        statusEl.textContent = '检测完成，用时 ' + ((Date.now() - t0) / 1000).toFixed(1) + ' 秒';
+        log('<div style="margin-top:6px;padding-top:8px;border-top:1px solid rgba(255,255,255,.1);color:#d6b96a;"><b>汇总</b></div>');
+        log('<div>总遍数：' + TOTAL + ' ｜ 通过：' + passRounds + ' ｜ 失败：' + (TOTAL - passRounds) + ' ｜ 通过率：' + Math.round(passRounds / TOTAL * 100) + '%</div>');
+        log('<div>音乐播放：' + (musicPlayed ? '<span style="color:#ff7a7a;">被触发 ✗</span>' : '<span style="color:#6fcf97;">零触发 ✓</span>') + ' ｜ CDN 音频请求：' + ((endAudioReqs - baseAudioReqs) === 0 ? '<span style="color:#6fcf97;">零请求 ✓</span>' : '<span style="color:#ff7a7a;">' + (endAudioReqs - baseAudioReqs) + ' 个 ✗</span>') + '</div>');
+        log('<div>' + (errMsg.length ? '高频失败项：' + errMsg.join('；') : '全部检测项通过 ✓') + '</div>');
+        /* 收尾：恢复正常交互模式，页面跳转恢复真实行为 */
+        window.__SELF_TEST__ = false;
+        window.__CARD_CLICK_DELAY = 600;
+        window.__PREFIX_JUMP_DELAY = 180;
+        stubClipboard(undefined, undefined, undefined);
+        setInput('');
+    })();
+})();
+
+/* ================= 隐藏授权卡片：与 8 张工具卡片同款样式，平时隐藏，搜索才显示
+   显示规则：WH 开头 → 「WH授权网址」；KS/HP/GZ/PRO 开头 → 「质量授权网站」；含授权词 → 两张都显示
+   注：放在脚本末尾注入，避免被搜索过滤/自检的卡片快照计入 8 张统计 ================= */
+(function(){
+    var wrap = document.getElementById('gridContainer');
+    var input = document.getElementById('searchInput');
+    if(!wrap || !input) return;
+    /* 图标沿用现有 8 张卡片：查询工具(放大镜) / 副卡网(星星)，保证与卡片完全同款 */
+    var ICON_QUERY = "M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z";
+    var ICON_QUALITY = "M235.58,128.84,160,91.06V48a32,32,0,0,0-64,0V91.06L20.42,128.84A8,8,0,0,0,16,136v32a8,8,0,0,0,9.57,7.84L96,161.76v18.93L82.34,194.34A8,8,0,0,0,80,200v32a8,8,0,0,0,11,7.43l37-14.81,37,14.81A8,8,0,0,0,176,232V200a8,8,0,0,0-2.34-5.66L160,180.69V161.76l70.43,14.08A8,8,0,0,0,240,168V136A8,8,0,0,0,235.58,128.84ZM224,158.24l-70.43-14.08A8,8,0,0,0,144,152v32a8,8,0,0,0,2.34,5.66L160,203.31v16.87l-29-11.61a8,8,0,0,0-5.94,0L96,220.18V203.31l13.66-13.65A8,8,0,0,0,112,184V152a8,8,0,0,0-9.57-7.84L32,158.24v-17.3l75.58-37.78A8,8,0,0,0,112,96V48a16,16,0,0,1,32,0V96a8,8,0,0,0,4.42,7.16L224,140.94Z";
+    function cardHtml(id, iconPath, name, desc, link){
+        return '<div class="grid-card" id="' + id + '" data-link="' + link + '">' +
+            '<span class="card-icon"><svg width="24" height="24" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor"><path d="' + iconPath + '"/></svg></span>' +
+            '<button type="button" class="card-copy" aria-label="复制网址"><svg class="copy-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ok-ic" viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg></button>' +
+            '<div class="card-main-text">' + name + '</div>' +
+            '<div class="card-sub-text">' + desc + '</div>' +
+        '</div>';
+    }
+    wrap.insertAdjacentHTML('beforeend',
+        cardHtml('authCardWh', ICON_QUERY, 'WH授权网址', 'WH 授权查询入口', 'https://www.wysjh.com/wh/') +
+        cardHtml('authCardXh', ICON_QUALITY, '质量授权网站', '质量授权查询入口', 'http://xh.wbpy.cn/'));
+    var elWh = document.getElementById('authCardWh');
+    var elXh = document.getElementById('authCardXh');
+    if(!elWh || !elXh) return;
+    function setCardShow(el, on){
+        if(on){
+            el.style.display = '';
+            el.classList.add('card-done');
+        }else{
+            el.style.display = 'none';
+        }
+    }
+    function refreshCards(){
+        var t = (input.value || '').trim();
+        if(!t){ setCardShow(elWh, false); setCardShow(elXh, false); return; }
+        var p = window.__matchPrefix ? window.__matchPrefix(t) : null;
+        var kw = window.__matchAuthKeywords ? window.__matchAuthKeywords(t) : false;
+        if(p === 'https://www.wysjh.com/wh/'){ setCardShow(elWh, true); setCardShow(elXh, false); }
+        else if(p === 'http://xh.wbpy.cn/'){ setCardShow(elWh, false); setCardShow(elXh, true); }
+        else if(kw){ setCardShow(elWh, true); setCardShow(elXh, true); }
+        else{ setCardShow(elWh, false); setCardShow(elXh, false); }
+    }
+    window.__hideAuthCards = refreshCards;
+    input.addEventListener('input', refreshCards);
+    /* 初始立即隐藏（主页/首次进入不显示，只有搜索匹配时才显示） */
+    refreshCards();
+    /* 与 8 张卡片同款交互：点击打开网址、复制按钮复制网址（这两张卡片后注入，早期未绑定，这里补齐） */
+    elWh.addEventListener('click', function(){
+        setTimeout(function(){ window.__navigate('https://www.wysjh.com/wh/'); }, window.__CARD_CLICK_DELAY || 600);
+    });
+    elXh.addEventListener('click', function(){
+        setTimeout(function(){ window.__navigate('http://xh.wbpy.cn/'); }, window.__CARD_CLICK_DELAY || 600);
+    });
+    [elWh, elXh].forEach(function(card){
+        var btn = card.querySelector('.card-copy');
+        if(!btn) return;
+        btn.addEventListener('click', function(e){
+            e.stopPropagation();
+            e.preventDefault();
+            var url = card.getAttribute('data-link') || '';
+            var toastEl = document.getElementById('playerToast');
+            function fallbackCopy(text){
+                var ta = document.createElement('textarea');
+                ta.value = text;
+                ta.setAttribute('readonly', '');
+                ta.style.position = 'fixed';
+                ta.style.top = '0';
+                ta.style.left = '0';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                ta.setSelectionRange(0, ta.value.length);
+                var ok = false;
+                try{ ok = document.execCommand('copy'); }catch(err){ ok = false; }
+                document.body.removeChild(ta);
+                return ok;
+            }
+            function markCopied(){
+                btn.classList.add('copied');
+                setTimeout(function(){ btn.classList.remove('copied'); }, 1200);
+                if(toastEl){ toastEl.innerHTML = '已复制网址'; toastEl.classList.add('show'); setTimeout(function(){ toastEl.classList.remove('show'); }, 1200); }
+            }
+            if(navigator.clipboard && navigator.clipboard.writeText){
+                navigator.clipboard.writeText(url).then(markCopied, function(){
+                    if(fallbackCopy(url)) markCopied();
+                });
+            }else{
+                if(fallbackCopy(url)) markCopied();
+            }
+        });
+    });
+})();
+
+/* ================= Service Worker 注册（静态资源缓存 30 天 / MP3 缓存 7 天；file:// 或不可用时静默跳过） ================= */
+if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
+    window.addEventListener('load', function(){
+        navigator.serviceWorker.register('sw.js').catch(function(){});
+    });
+}
 </script>
 </body>
 </html>
