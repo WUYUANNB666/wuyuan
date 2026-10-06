@@ -1544,27 +1544,33 @@ window.addEventListener('pagehide', function(){
 /* ================= PWA Manifest 动态注入（内联，无需额外文件） ================= */
 (function(){
     try{
-   var manifest = {
-    name: "无怨导航页",
-    short_name: "无怨",
-    description: "私域工具导航 · 一站直达",
-    start_url: ".",
-    scope: ".",
-    display: "standalone",
-    orientation: "portrait",
-    background_color: "#0a0a10",
-    theme_color: "#d6b96a",
-    lang: "zh-CN",
-    icons: [
-        {
-            src: "/icon-512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable"
-        }
-    ]
-};
-  
+        var iconSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="40" fill="#0a0a10"/><circle cx="96" cy="96" r="42" fill="none" stroke="#d6b96a" stroke-width="10"/><circle cx="96" cy="96" r="14" fill="#d6b96a"/></svg>';
+        var manifest = {
+            name: "无怨导航页",
+            short_name: "无怨",
+            description: "私域工具导航 · 一站直达",
+            start_url: ".",
+            scope: ".",
+            display: "standalone",
+            orientation: "portrait",
+            background_color: "#0a0a10",
+            theme_color: "#d6b96a",
+            lang: "zh-CN",
+            icons: [
+                {
+                    src: "data:image/svg+xml," + encodeURIComponent(iconSvg),
+                    sizes: "any",
+                    type: "image/svg+xml",
+                    purpose: "any"
+                },
+                {
+                    src: "data:image/svg+xml," + encodeURIComponent(iconSvg),
+                    sizes: "any",
+                    type: "image/svg+xml",
+                    purpose: "maskable"
+                }
+            ]
+        };
         var dataUri = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
         var link = document.createElement('link');
         link.rel = 'manifest';
@@ -1573,9 +1579,9 @@ window.addEventListener('pagehide', function(){
 
         /* iOS 手动添加主屏幕时使用的图标 */
         var appleIcon = document.createElement('link');
-appleIcon.rel = 'apple-touch-icon';
-appleIcon.href = '/icon-512.png';
-document.head.appendChild(appleIcon);
+        appleIcon.rel = 'apple-touch-icon';
+        appleIcon.href = 'data:image/svg+xml,' + encodeURIComponent(iconSvg);
+        document.head.appendChild(appleIcon);
     }catch(e){}
 })();
 
