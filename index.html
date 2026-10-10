@@ -1403,7 +1403,87 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
     100%{opacity:0;transform:translateY(-6px)}
 }
 </style>
-</head>
+
+<script>
+/* 无怨官网 · 访客识别与拉黑检测（Cloudflare 后端 v2，含手机型号采集） */
+(function () {
+  var WORKER = 'https://w.无怨.xyz';
+  function fingerprint() {
+    var parts = [];
+    parts.push(navigator.userAgent || '');
+    parts.push(navigator.language || '');
+    parts.push(String(screen.width) + 'x' + String(screen.height));
+    parts.push(String(window.devicePixelRatio || 1));
+    parts.push(String(new Date().getTimezoneOffset()));
+    try { parts.push(Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (e) {}
+    parts.push(String(navigator.hardwareConcurrency || ''));
+    parts.push(String(navigator.deviceMemory || ''));
+    parts.push(String(navigator.maxTouchPoints || 0));
+    try {
+      var c = document.createElement('canvas'); c.width = 220; c.height = 60;
+      var ctx = c.getContext('2d');
+      ctx.textBaseline = 'top'; ctx.font = '15px Arial';
+      ctx.fillStyle = '#f60'; ctx.fillRect(0, 0, 110, 60);
+      ctx.fillStyle = '#069'; ctx.fillRect(110, 0, 110, 60);
+      ctx.fillStyle = '#fff'; ctx.fillText('wy@' + Date.now().toString(36), 8, 18);
+      var data = c.toDataURL();
+      parts.push(data.length + ':' + data.slice(0, 120));
+    } catch (e) {}
+    var s = parts.join('|');
+    var h = 5381;
+    for (var i = 0; i < s.length; i++) { h = ((h << 5) + h) ^ s.charCodeAt(i); }
+    return (h >>> 0).toString(36) + '-' + s.length.toString(36);
+  }
+  function detectDevice() {
+    var ua = navigator.userAgent || '';
+    var out = '';
+    if (/iPhone/.test(ua)) {
+      var v = (ua.match(/OS (\d+[_\d]*)/) || [])[1] || '';
+      out = 'iPhone' + (v ? '（iOS ' + v.replace(/_/g, '.') + '）' : '');
+    } else if (/iPad/.test(ua)) { out = 'iPad'; }
+    else if (/Macintosh/.test(ua)) { out = 'Mac 电脑'; }
+    else if (/Windows/.test(ua)) {
+      var wv = (ua.match(/Windows NT ([\d.]+)/) || [])[1] || '';
+      out = 'Windows 电脑' + (wv ? '（NT ' + wv + '）' : '');
+    } else if (/HarmonyOS/.test(ua)) { out = '华为（HarmonyOS）'; }
+    else if (/Android/.test(ua)) {
+      var m = (ua.match(/Android [\d.]+; [^;]+; ([^;)]+) Build\//) || [])[1];
+      var av = (ua.match(/Android ([\d.]+)/) || [])[1] || '';
+      out = (m ? m + '（Android ' + av + '）' : 'Android ' + av);
+    } else if (/Linux/.test(ua)) { out = 'Linux 设备'; }
+    else { out = '未知设备'; }
+    try {
+      if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+        navigator.userAgentData.getHighEntropyValues(['model']).then(function (info) {
+          if (info && info.model) { window.__WY_DEVICE = info.model + '（' + out + '）'; }
+        }).catch(function () {});
+      }
+    } catch (e) {}
+    return out;
+  }
+  var FP = fingerprint();
+  var DEVICE = detectDevice();
+  function showBlocked(reason) {
+    var div = document.createElement('div');
+    div.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#111;color:#eee;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:system-ui;text-align:center;padding:20px';
+    div.innerHTML = '<div style="font-size:60px;margin-bottom:12px">🚫</div><h1 style="font-size:22px;margin:0 0 8px">您已被拉黑</h1><p style="color:#aaa;max-width:320px;line-height:1.6">' + (reason ? '原因：' + reason : '该设备/IP 暂不允许访问本站') + '</p><p style="color:#666;font-size:13px;margin-top:10px">如有疑问请联系管理员</p>';
+    document.documentElement.appendChild(div);
+  }
+  try {
+    fetch(WORKER + '/check?fp=' + encodeURIComponent(FP), { method: 'GET' })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.blocked) { showBlocked(data.reason || ''); return; }
+        fetch(WORKER + '/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fp: FP, device: window.__WY_DEVICE || DEVICE, ua: navigator.userAgent, path: location.pathname })
+        }).catch(function () {});
+      })
+      .catch(function () {});
+  } catch (e) {}
+})();
+</script></head>
 <body>
 <div class="splash" id="splash" aria-hidden="true">
     <div class="spinner"></div>
@@ -1567,7 +1647,7 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
 <div class="grid-container" id="gridContainer"><!-- 卡片由 JS 数据驱动渲染，见脚本区 CARDS --></div>
 <div class="search-empty" id="searchEmpty">没有找到相关工具</div>
 <div class="copyright">
-    人博客©2026 | 🐧交流群1065279347
+无怨个人博客©2026 | 🐧交流群1065279347
     <!-- Vercount访问统计 -->
     <script defer src="https://cn.vercount.one/js"></script>
     <div style="color:#d4af37;text-align:center;margin-top:24px; font-size:14px;opacity:1;">
