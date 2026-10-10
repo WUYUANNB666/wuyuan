@@ -585,6 +585,7 @@ body.entered .grid-card.card-done{opacity:1; animation:none;}
     display: flex;
     flex-direction: column;
     box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    margin-top: -4vh;   /* 弹窗整体居中偏上；确认按钮靠弹窗内部贴底下沉 */
 }
 .modal-head{
     display: flex;
@@ -638,24 +639,27 @@ body.entered .grid-card.card-done{opacity:1; animation:none;}
 .checkbox-row{
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 .checkbox-row input{
-    width: 22px;
-    height: 22px;
+    width: 20px;
+    height: 20px;
     accent-color: var(--gold);
     cursor: pointer;
 }
 .checkbox-row label{
-    font-size: 14px;
+    font-size: 13px;
     color: #ddd;
     cursor: pointer;
 }
+.checkbox-row.cb-7d{margin-bottom: 10px;}
+.checkbox-row.cb-7d label{color: #cfc5a8;font-size:12px;}
 .enter-btn{
     width: 100%;
     height: 52px;
+    margin-top: 6px;   /* 勾选行与确认按钮贴紧 */
     border: none;
     border-radius: 14px;
     color: #fff;
@@ -888,7 +892,7 @@ audio{display: none;}
     font-size:12px;font-weight:400;letter-spacing:2px;
     color:rgba(255,255,255,0.45);text-transform:uppercase;flex-shrink:0;
 }
-.music-list{max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;}
+.music-list{max-height:50vh;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:2px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
 .music-item{
     padding:13px 14px;border-radius:10px;background:rgba(255,255,255,.05);
     cursor:pointer;font-size:14px;transition:background .2s,border-color .2s;
@@ -919,6 +923,53 @@ audio{display: none;}
     transition:background .2s;flex-shrink:0;
 }
 .music-modal-close:hover{background:rgba(255,255,255,.14);}
+/* ===================== 设置面板 ===================== */
+.settings-btn{
+    width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,.08);
+    color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;
+    transition:background .2s,transform .2s;flex-shrink:0;
+}
+.settings-btn svg{width:20px;height:20px;}
+.settings-btn:hover{background:rgba(214,185,106,.25);}
+.settings-btn:active{transform:scale(.9);}
+.set-item{margin-bottom:20px;}
+.set-label{
+    font-size:14px;color:rgba(255,255,255,.9);margin-bottom:10px;
+    display:flex;align-items:center;justify-content:space-between;
+}
+.set-val{font-size:13px;color:var(--gold,#d6b96a);}
+.vol-range{
+    width:100%;-webkit-appearance:none;appearance:none;height:6px;border-radius:3px;
+    background:rgba(255,255,255,.18);outline:none;
+    touch-action:pan-x;       /* 允许横向拖动，不被页面滚动拦截 */
+}
+.vol-range::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:18px;height:18px;border-radius:50%;
+    background:var(--gold,#d6b96a);border:none;cursor:pointer;
+    box-shadow:0 0 6px rgba(214,185,106,.4);
+}
+.vol-range::-moz-range-thumb{
+    width:18px;height:18px;border-radius:50%;background:var(--gold,#d6b96a);border:none;cursor:pointer;
+}
+.set-seg{display:flex;gap:8px;}
+.set-seg-btn{
+    flex:1;height:38px;border-radius:10px;border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.05);color:rgba(255,255,255,.75);font-size:13px;cursor:pointer;
+    transition:all .2s;padding:0 4px;
+}
+.set-seg-btn.active{
+    border-color:var(--gold,#d6b96a);color:#fff;background:rgba(214,185,106,.16);
+}
+.set-switch{
+    width:50px;height:28px;border-radius:14px;background:rgba(255,255,255,.18);
+    position:relative;cursor:pointer;transition:background .25s;
+}
+.set-switch.on{background:var(--gold,#d6b96a);}
+.set-switch-knob{
+    width:22px;height:22px;border-radius:50%;background:#fff;position:absolute;top:3px;left:3px;
+    transition:left .25s;
+}
+.set-switch.on .set-switch-knob{left:25px;}
 /* ================= 音乐交互增强（可拖动进度条 / 滚轮音量 / 长按横滑跳转） ================= */
 .music-disc-btn{
     width: 44px;
@@ -995,6 +1046,9 @@ body.dark-mode .music-progress-thumb{
     background: #ffffff;
     border-color: #2a2a2a;
     box-shadow: 0 0 8px rgba(255,255,255,.55);
+}
+body.dark-mode .music-progress{
+    background: #ffffff;   /* 黑暗模式下进度条变白色 */
 }
 .music-spectrum{
     pointer-events: auto;
@@ -1137,6 +1191,21 @@ body.dark-mode .music-progress-thumb{
     }
     .card-main-text{font-size:20px;}
     .grid-container{gap:16px;}
+    /* 隐藏授权卡片：手机端卡片窄，防文字换行/溢出，保证文字完整在按钮内部 */
+    #authCardWh .card-main-text,
+    #authCardXh .card-main-text{
+        font-size:16px;
+        white-space:nowrap;
+    }
+    #authCardWh .card-sub-text,
+    #authCardXh .card-sub-text{
+        font-size:12px;
+        white-space:nowrap;
+    }
+    #authCardWh,
+    #authCardXh{
+        overflow:hidden;
+    }
     .search-wrap{margin-bottom: 12px;}
     .search-box{height: 46px; border-radius: 14px; padding: 0 14px;}
     .search-box input{font-size: 14px;}
@@ -1391,6 +1460,10 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
                 <input type="checkbox" id="agreeCheck">
                 <label for="agreeCheck">我已完整阅读并同意全部免责条款</label>
             </div>
+            <div class="checkbox-row cb-7d">
+                <input type="checkbox" id="agree7d">
+                <label for="agree7d">同意并 7 天内不再弹出</label>
+            </div>
             <button class="enter-btn" id="enterBtn" disabled>确认进入站点</button>
         </div>
     </div>
@@ -1403,6 +1476,34 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
         </div>
         <div class="music-list" id="musicList"></div>
         <button type="button" class="music-modal-close" id="musicModalClose">关闭</button>
+    </div>
+</div>
+<!-- ===================== 设置面板（音量 / 主题锁定 / 后台播放） ===================== -->
+<div class="music-modal-overlay" id="settingsModal" style="display:none;">
+    <div class="music-modal">
+        <div class="music-modal-title">
+            <span>设置</span>
+            <span class="mt-en">SETTINGS</span>
+        </div>
+        <div class="set-item">
+            <div class="set-label">音乐音量 <span class="set-val" id="volValue">80%</span></div>
+            <input type="range" class="vol-range" id="volRange" min="0" max="100" step="1" value="80" aria-label="音乐音量">
+        </div>
+        <div class="set-item">
+            <div class="set-label">背景主题</div>
+            <div class="set-seg" id="themeSeg">
+                <button type="button" class="set-seg-btn" data-t="auto">跟随时间</button>
+                <button type="button" class="set-seg-btn" data-t="dark">一直黑暗</button>
+                <button type="button" class="set-seg-btn" data-t="gold">一直黄金</button>
+            </div>
+        </div>
+        <div class="set-item">
+            <div class="set-label">后台播放音乐 <span class="set-val" id="bgPlayState">开</span></div>
+            <div class="set-switch" id="bgPlaySwitch" role="switch" aria-checked="true">
+                <div class="set-switch-knob"></div>
+            </div>
+        </div>
+        <button type="button" class="music-modal-close" id="settingsClose">关闭</button>
     </div>
 </div>
 <div class="header-title">
@@ -1442,9 +1543,12 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
     </div>
     <span class="gradient-text">无怨</span>
     <div class="tutorial-box">
-        <div class="tutorial-btn" id="tutorialBtn">介绍</div>
-        <div class="tutorial-tip">无怨个人录</div>
+        <div class="tutorial-btn" id="tutorialBtn">反馈</div>
+        <div class="tutorial-tip">反馈</div>
        </div>
+    <button type="button" class="settings-btn" id="settingsBtn" aria-label="设置">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
 </div>
 
 <!-- ===================== 搜索框 ===================== -->
@@ -1463,7 +1567,13 @@ body.egg-shake .grid-container{animation:eggShake .6s cubic-bezier(.36,.07,.19,.
 <div class="grid-container" id="gridContainer"><!-- 卡片由 JS 数据驱动渲染，见脚本区 CARDS --></div>
 <div class="search-empty" id="searchEmpty">没有找到相关工具</div>
 <div class="copyright">
-    无怨个人博客©2026 | 🐧交流群1065279347
+    人博客©2026 | 🐧交流群1065279347
+    <!-- Vercount访问统计 -->
+    <script defer src="https://cn.vercount.one/js"></script>
+    <div style="color:#d4af37;text-align:center;margin-top:24px; font-size:14px;opacity:1;">
+    总访问量：<span id="busuanzi_value_site_pv"></span> 次 &nbsp;|&nbsp;
+    访客数量：<span id="busuanzi_value_site_uv"></span> 人
+    </div>
 </div>
 <div class="player-toast" id="playerToast" aria-hidden="true"></div>
 <button type="button" class="back-top-btn" id="backTopBtn" aria-label="回到顶部">
@@ -1607,41 +1717,52 @@ window.addEventListener('pagehide', function(){
     setTimeout(hideSplash, 4000);
 })();
 
-/* ================= 背景自动识别时间（不再使用任何缓存，纯按时间自适应） =================
-   8:00–17:00 亮色黄金界面；17:00–次日 8:00 暗色。
-   已删除原先的 localStorage 主题记忆（3 天缓存会覆盖自动识别导致不生效）。
-   手动点击开关仅在本会话内临时生效，下次刷新页面仍按时间自动选择。 */
+/* ================= 背景主题：跟随时间 / 一直黑暗 / 一直黄金（持久化，可被设置面板锁定） =================
+   auto：8:00–17:00 黄金亮色，其余时间暗色；dark：一直黑暗；gold：一直黄金亮色。
+   选择持久化到 localStorage（wuyuan_theme_lock），刷新后仍生效。
+   右上角月亮/太阳按钮：在 dark / gold 之间快速互切并持久化。 */
 (function(){
     var toggle = document.getElementById('darkModeToggle');
-    var manualOverride = null;   /* null=本会话未手动改过；true/false=手动选择的暗/亮 */
-    function applyTheme(dark){
-        document.body.classList.toggle('dark-mode', dark);
-        toggle.classList.toggle('active', dark);
+    var THEME_KEY = 'wuyuan_theme_lock';
+    function getThemeSetting(){
+        try{
+            var v = localStorage.getItem(THEME_KEY);
+            return (v === 'dark' || v === 'gold') ? v : 'auto';
+        }catch(e){ return 'auto'; }
     }
-    function autoTheme(){
+    function setThemeSetting(v){
+        try{ localStorage.setItem(THEME_KEY, v); }catch(e){}
+    }
+    function autoIsDark(){
         var h = new Date().getHours();
         return (h >= 17 || h < 8);
     }
-    function applyAutoIfNeeded(){
-        if(manualOverride !== null) return;   /* 本会话手动改过则不再自动覆盖 */
-        applyTheme(autoTheme());
-    }
-    /* 初始化：按当前时间自动选择背景 */
-    applyAutoIfNeeded();
-    toggle.onclick = function(){
-        this.classList.toggle('active');
-        var isDarkNow = document.body.classList.toggle('dark-mode');
-        manualOverride = isDarkNow;
+    function applyThemeSetting(setting){
+        var dark = (setting === 'dark') || (setting === 'auto' && autoIsDark());
+        document.body.classList.toggle('dark-mode', dark);
+        if(toggle) toggle.classList.toggle('active', dark);
         document.body.dispatchEvent(new Event('themechange'));
-    };
-    /* 跨时间边界（17:00 / 8:00）自动校准；仅在没有手动切换过时生效 */
+    }
+    /* 初始化：按持久化设置应用主题 */
+    applyThemeSetting(getThemeSetting());
+    if(toggle){
+        toggle.onclick = function(){
+            var isDarkNow = document.body.classList.contains('dark-mode');
+            var next = isDarkNow ? 'gold' : 'dark';
+            setThemeSetting(next);
+            applyThemeSetting(next);
+            if(typeof window.syncSettingsPanel === 'function') window.syncSettingsPanel();
+        };
+    }
+    /* 跨时间边界（17:00 / 8:00）自动校准：仅 auto 模式生效 */
     setInterval(function(){
         if(document.hidden) return;
-        applyAutoIfNeeded();
+        if(getThemeSetting() === 'auto') applyThemeSetting('auto');
     }, 60000);
     document.addEventListener('visibilitychange', function(){
-        if(!document.hidden) applyAutoIfNeeded();
+        if(!document.hidden && getThemeSetting() === 'auto') applyThemeSetting('auto');
     });
+    window.__getThemeSetting = getThemeSetting;
 })();
 
 /* ================= 顶部走马灯公告栏（点击✕关闭，7 天内不再显示，布局恢复原样） ================= */
@@ -1670,20 +1791,29 @@ window.addEventListener('pagehide', function(){
     });
 })();
 
-/* ================= 免责弹窗（同一会话内返回不再重复弹窗；下次重新进入再确认） ================= */
+/* ================= 免责弹窗（勾选"7 天内不再弹出"则本地记住 7 天；否则同一会话内返回不再重复弹窗） ================= */
 (function(){
     var modal = document.getElementById('announcementModal');
     var agree = document.getElementById('agreeCheck');
+    var agree7d = document.getElementById('agree7d');
     var enter = document.getElementById('enterBtn');
     var disX = document.getElementById('disX');
     var AGREE_SESSION_KEY = 'wuyuan_agree_check_session';
+    var AGREE_7D_KEY = 'wuyuan_disclaimer_7d_until';   /* 存 7 天后的时间戳 */
     function exitWebsite(){
         try{ var w = window.open('', '_self'); if(w) w.close(); }catch(e){}
         window.location.href = 'about:blank';
     }
     if(disX){ disX.addEventListener('click', exitWebsite); }
 
+    function is7dValid(){
+        try{
+            var t = parseInt(localStorage.getItem(AGREE_7D_KEY) || '0', 10);
+            return t > Date.now();
+        }catch(e){ return false; }
+    }
     function isAgreed(){
+        if(is7dValid()) return true;
         try{ return sessionStorage.getItem(AGREE_SESSION_KEY) === '1'; }catch(e){ return false; }
     }
     function applyAgreed(){
@@ -1692,20 +1822,34 @@ window.addEventListener('pagehide', function(){
     }
 
     if(isAgreed()){
-        /* 本次会话已确认过：直接进入，不再重复弹窗 */
+        /* 已确认过（7 天内或本会话）：直接进入，不再重复弹窗 */
         applyAgreed();
     }
     agree.addEventListener('change', function(){
         enter.disabled = !agree.checked;
+        if(!agree.checked && agree7d) agree7d.checked = false;
         try{ sessionStorage.setItem(AGREE_SESSION_KEY, agree.checked ? '1' : '0'); }catch(e){}
     });
+    /* 勾选"7 天不再弹出"= 同时勾选同意条款 */
+    if(agree7d){
+        agree7d.addEventListener('change', function(){
+            if(agree7d.checked){
+                agree.checked = true;
+                enter.disabled = false;
+                try{ sessionStorage.setItem(AGREE_SESSION_KEY, '1'); }catch(e){}
+            }
+        });
+    }
     enter.addEventListener('click', function(){
         if (enter.disabled) return;
         applyAgreed();
         try{ sessionStorage.setItem(AGREE_SESSION_KEY, '1'); }catch(e){}
+        if(agree7d && agree7d.checked){
+            try{ localStorage.setItem(AGREE_7D_KEY, String(Date.now() + 7 * 24 * 60 * 60 * 1000)); }catch(e){}
+        }
         safePlayMusic();
     });
-    /* 从外部网址返回 / 刷新：本次会话已确认过则自动进入，无需再次点击 */
+    /* 从外部网址返回 / 刷新：已确认过则自动进入，无需再次点击 */
     window.addEventListener('pageshow', function(){
         if(isAgreed()){
             if(!document.body.classList.contains('entered')) applyAgreed();
@@ -1717,25 +1861,52 @@ window.addEventListener('pagehide', function(){
 
 /* ================= 音乐播放器 ================= */
 var MUSIC_LIST = [
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Anzap.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Anzap-%E9%98%BF%E6%9D%B0.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Broke%EF%BC%88Mixux%EF%BC%89-%E8%BF%B7%E7%BB%AA%20(1).mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Hai%20Phut%20Hon-%E9%9C%93%E8%99%B9%E5%85%94_Luv4.mp3",
     "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Hai%20Phut.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Immortals.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Wrap%20me%20in%20plastic.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E9%9B%A8%E8%BF%87%E5%90%8E%E7%9A%84%E9%A3%8E%E6%99%AF.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E9%9B%A8%E7%88%B1.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E8%BF%98%E6%98%AF%E4%BC%9A%E6%83%B3%E4%BD%A0.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E7%BD%97%E6%9B%BC%E8%92%82%E7%9A%84%E7%88%B1%E6%83%85.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E7%BA%A2%E8%89%B2%E9%AB%98%E8%B7%9F%E9%9E%8B.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%BD%AE%E6%B1%90.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%A8%B1%E8%8A%B1%E6%A0%91%E4%B8%8B%E7%9A%84%E7%BA%A6%E5%AE%9A.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%BF%83%E5%A2%99.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%BF%83%E4%BC%BC%E7%83%9F%E7%81%AB.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%B9%BB%E6%98%BC.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Immortals-%E9%9C%93%E8%99%B9%E5%85%94.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Night%20Crusing%EF%BC%88%E5%A4%9C%E9%97%B4%E5%B7%A1%E8%88%AA%EF%BC%89-%E9%9B%B7%E7%B1%B3%E5%85%8B%E6%96%AF.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Phut%20Hon%E4%BB%A4%E6%88%91%E7%97%B4%E4%BB%A4%E6%88%91%E7%99%AB-%E9%98%BF%E6%9D%B0_%E6%9E%97%E5%8F%AF%E6%9C%9F.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Run%20Free%20(feat.%20IVIE)-Deep%20Chills_.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/The%20Moment%20of%20City-Alex%20Lorry.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/Wrap%20Me%20in%20Plastic-CHROMANCE_Ma.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E4%B8%8B%E5%9D%A0Falling%EF%BC%88DJ%E7%89%88%EF%BC%89-DeciuR7.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E4%BA%9B%E8%AE%B8%E9%81%97%E6%86%BE%E5%9D%A6%E7%84%B6%E9%87%8A%E6%80%800.8X-%E9%98%BF%E6%9D%B0_krs.mp3",
     "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%A0%95.mp3",
-    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/nightcrusing.mp3"
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%A4%A7%E5%A4%A9%E8%93%AC-DJ%E9%98%BF%E5%93%B2.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%B0%91%E4%B8%80%E7%82%B9%E5%A4%A9%E5%88%86-DJ%E5%B0%8F%E5%B0%8F%E6%99%BA_Kag.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%B9%BB%E6%98%BC4.0-%E6%B8%A1%E5%B7%9D.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%BF%83%E4%BC%BC%E7%83%9F%E7%81%AB-DJ%E5%A4%A7%E5%A4%A7%E6%80%AA.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%BF%83%E5%A2%99%EF%BC%88%E9%87%8A%E6%80%80%E7%89%88%EF%BC%89-%E8%B4%A6%E5%8F%B7%E5%B7%B2%E6%B3%A8%E9%94%80.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E5%BF%A7%E9%83%81%E5%B9%BB%E6%98%BC-%E8%AF%85%E5%92%92%E4%B9%8B%E7%BF%BC%C2%B7Cu.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%88%91%E4%B9%98%E7%9D%80%E9%A3%8E%E9%A3%9E%E8%BF%87%E6%9D%A5-%E6%B4%AA%E8%BE%B0_%E5%AE%81%E6%A1%93%E5%AE%87.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%88%91%E5%A5%BD%E6%83%B3%E4%BD%A0%2B%E6%99%AE%E9%80%9A%E5%A5%B3%E5%AD%A9%2B%E7%9F%AD%E5%8F%91%E5%A5%B3%E5%AD%A9-DJ%E5%B0%8F%E5%B0%8F%E6%99%BA.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%88%91%E7%9F%A5%E9%81%93%E4%BD%A0%20(1.1x)-%E7%86%8A%E9%9B%A8%E7%8F%82.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%8C%87%E5%B0%96%E7%9A%84%E5%B9%B4%E8%BD%AE-CashMoon.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%A8%B1%E8%8A%B1%E6%A0%91%E4%B8%8B%E7%9A%84%E7%BA%A6%E5%AE%9A.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%BD%AE%E6%B1%90-%E9%9C%93%E8%99%B9%E5%85%94.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E6%BD%AE%E6%B1%90.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E7%89%B9%E5%88%AB%E7%9A%84%E4%BA%BA%EF%BC%88DJ%E7%89%88%EF%BC%89-DJ%E9%98%BF%E6%99%BA.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E7%BA%A2%E8%89%B2%E9%AB%98%E8%B7%9F%E9%9E%8B%EF%BC%88%E6%B7%B7%E9%9F%B3%E7%83%AD%E6%92%AD%E7%89%88%EF%BC%89-%E8%96%84%E5%86%B0%E5%93%A5.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E7%BA%AF%E9%9F%B3%E4%B9%90(BB%E9%BC%93)-%E6%9E%81%E8%87%B4%E5%83%8F%E7%B4%A0.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E7%BD%97%E6%9B%BC%E8%92%82%E5%85%8B%E7%9A%84%E7%88%B1%E6%83%85-%E5%85%B1%E6%9B%A6%E8%BE%B0.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E8%8B%A6%E8%8C%B6%E5%AD%90-Starling8_DR.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E8%BE%9E%E4%B9%9D%E9%97%A8%E5%9B%9E%E5%BF%86%2B%E8%8E%AB%E9%97%AE%E5%BD%92%E6%9C%9F-DJ%E9%98%BF%E5%93%B2.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E8%BF%87%E7%81%AB(DJ%E7%89%88%EF%BC%89-DJ%E9%98%BF%E6%99%BA.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E8%BF%98%E6%98%AF%E4%BC%9A%E6%83%B3%E4%BD%A0%EF%BC%88DJAN%E7%89%88%EF%BC%89-Jahyl.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E9%97%AE-Jan.mp3",
+    "https://default-udstg9p.cdn.7caiyun.com/%E9%9F%B3%E4%B9%90/%E9%9B%A8%E7%88%B1%EF%BC%88DJ%E5%B0%8F%E8%BE%9ERemix%EF%BC%89-DJ%E5%B0%8F%E8%BE%9E%20(1).mp3",
 ];
 var currentMusicIndex = -1;
 var audio = document.getElementById('miniMusicAudio');
+/* 音量初始化：读取持久化设置（默认 0.8） */
+(function(){
+    try{
+        var v = parseFloat(localStorage.getItem('wuyuan_vol'));
+        audio.volume = (isNaN(v) ? 0.8 : Math.max(0, Math.min(1, v)));
+    }catch(e){ audio.volume = 0.8; }
+})();
 var playBtn = document.getElementById('musicPlayBtn');
 var discBtn = document.getElementById('musicDiscBtn');
 var progressBar = document.getElementById('musicProgress');
@@ -1792,6 +1963,16 @@ audio.addEventListener('playing', function(){
     playBtn.classList.add('playing');
     if(discBtn) discBtn.classList.add('playing');
     musicPlaying = true;
+    /* 后台播放增强：通知栏/锁屏显示歌名（支持 Media Session 的浏览器与PWA） */
+    if('mediaSession' in navigator){
+        try{
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: musicName(MUSIC_LIST[currentMusicIndex]) || '无怨导航音乐',
+                artist: '无怨导航',
+                album: ''
+            });
+        }catch(e){}
+    }
 });
 audio.addEventListener('pause', function(){
     document.body.classList.remove('music-playing');
@@ -1799,10 +1980,19 @@ audio.addEventListener('pause', function(){
     if(discBtn) discBtn.classList.remove('playing');
     musicPlaying = false;
 });
+/* ========== 后台播放开关控制（可在设置面板切换，默认开启） ==========
+   开启：切走页面/锁屏/切App时音乐继续播放，不主动暂停。
+   关闭：恢复原逻辑（切后台暂停、回前台恢复）。
+   注：部分手机浏览器/微信内置浏览器会按系统策略强制暂停网页音频，
+   此时用浏览器菜单「添加到主屏幕」（PWA 模式）打开本页，即可稳定后台播放。 */
+function getBgPlaySetting(){
+    try{ return localStorage.getItem('wuyuan_bg_play') !== '0'; }catch(e){ return true; }
+}
+window.getBgPlaySetting = getBgPlaySetting;
 var wasPlayingBeforeHide = false;
 document.addEventListener('visibilitychange', function(){
     if(document.hidden){
-        if(musicPlaying && audio && !audio.paused){
+        if(!getBgPlaySetting() && musicPlaying && audio && !audio.paused){
             wasPlayingBeforeHide = true;
             audio.pause();
         }else{
@@ -1847,9 +2037,15 @@ function renderMusicList(){
 function openMusicModal(){
     renderMusicList();
     musicModal.style.display = 'flex';
+    /* 打开选歌界面时锁定背景（html+body 都锁，兼容 iOS/安卓）：官网首页不能再滑动 */
+    document.documentElement.style.overflow = 'hidden';
+    document.body.style.overflow = 'hidden';
 }
 function closeMusicModal(){
     musicModal.style.display = 'none';
+    /* 关闭选歌界面后恢复官网首页滚动 */
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
 }
 /* 音符/头像按钮：单击直接打开选歌界面 */
 discBtn.addEventListener('click', openMusicModal);
@@ -1873,10 +2069,128 @@ function playNextTrack(){
 }
 if(prevBtn) prevBtn.addEventListener('click', playPrevTrack);
 if(nextBtn) nextBtn.addEventListener('click', playNextTrack);
+/* 系统通知栏/锁屏媒体控制按钮（配合后台播放使用） */
+if('mediaSession' in navigator){
+    try{
+        navigator.mediaSession.setActionHandler('play', function(){ safePlayMusic(); });
+        navigator.mediaSession.setActionHandler('pause', function(){ if(audio) audio.pause(); });
+        navigator.mediaSession.setActionHandler('previoustrack', playPrevTrack);
+        navigator.mediaSession.setActionHandler('nexttrack', playNextTrack);
+    }catch(e){}
+}
 musicModalClose.addEventListener('click', closeMusicModal);
 musicModal.addEventListener('click', function(e){
     if(e.target === musicModal) closeMusicModal();
 });
+/* 移动端：只在弹窗非列表区域阻止滑动（背景已由 overflow:hidden 锁定；
+   列表内部交给原生滚动，overscroll-behavior:contain 负责阻止滚动链穿透） */
+musicModal.addEventListener('touchmove', function(e){
+    var list = musicList;
+    if(!list || !list.contains(e.target)){
+        e.preventDefault();
+    }
+}, { passive: false });
+/* ================= 设置面板（音量 / 主题锁定 / 后台播放） ================= */
+(function(){
+    var modal = document.getElementById('settingsModal');
+    var openBtn = document.getElementById('settingsBtn');
+    var closeBtn = document.getElementById('settingsClose');
+    var volRange = document.getElementById('volRange');
+    var volValue = document.getElementById('volValue');
+    var themeSeg = document.getElementById('themeSeg');
+    var bgSwitch = document.getElementById('bgPlaySwitch');
+    var bgState = document.getElementById('bgPlayState');
+    var THEME_KEY = 'wuyuan_theme_lock';
+    var VOL_KEY = 'wuyuan_vol';
+    var BG_KEY = 'wuyuan_bg_play';
+    if(!modal) return;
+
+    function getVol(){
+        try{ var v = parseFloat(localStorage.getItem(VOL_KEY)); return isNaN(v) ? 0.8 : Math.max(0, Math.min(1, v)); }catch(e){ return 0.8; }
+    }
+    function getThemeFromLS(){
+        try{ var v = localStorage.getItem(THEME_KEY); return (v === 'dark' || v === 'gold') ? v : 'auto'; }catch(e){ return 'auto'; }
+    }
+    function getBg(){
+        try{ return localStorage.getItem(BG_KEY) !== '0'; }catch(e){ return true; }
+    }
+    function sync(){
+        var vol = Math.round(getVol() * 100);
+        if(volRange) volRange.value = vol;
+        if(volValue) volValue.textContent = vol + '%';
+        var t = getThemeFromLS();
+        if(themeSeg){
+            var btns = themeSeg.querySelectorAll('.set-seg-btn');
+            for(var i = 0; i < btns.length; i++){
+                btns[i].classList.toggle('active', btns[i].getAttribute('data-t') === t);
+            }
+        }
+        var on = getBg();
+        if(bgSwitch){
+            bgSwitch.classList.toggle('on', on);
+            bgSwitch.setAttribute('aria-checked', on ? 'true' : 'false');
+        }
+        if(bgState) bgState.textContent = on ? '开' : '关';
+    }
+    window.syncSettingsPanel = sync;
+
+    function openPanel(){
+        sync();
+        modal.style.display = 'flex';
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+    }
+    function closePanel(){
+        modal.style.display = 'none';
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+    }
+    if(openBtn) openBtn.addEventListener('click', openPanel);
+    if(closeBtn) closeBtn.addEventListener('click', closePanel);
+    if(modal) modal.addEventListener('click', function(e){ if(e.target === modal) closePanel(); });
+    /* 只在遮罩空白处阻止滑动；音量滑条、按钮区域必须允许触摸拖动 */
+    modal.addEventListener('touchmove', function(e){
+        if(e.target === modal) e.preventDefault();
+    }, { passive: false });
+
+    /* 音量滑块：实时调音量并持久化 */
+    if(volRange && volValue){
+        volRange.addEventListener('input', function(){
+            var v = parseInt(volRange.value, 10) / 100;
+            volValue.textContent = volRange.value + '%';
+            try{ localStorage.setItem(VOL_KEY, String(v)); }catch(e){}
+            var a = document.getElementById('miniMusicAudio');
+            if(a) a.volume = v;
+        });
+    }
+    /* 主题分段：跟随时间 / 一直黑暗 / 一直黄金 */
+    if(themeSeg){
+        themeSeg.addEventListener('click', function(e){
+            var btn = e.target.closest('.set-seg-btn');
+            if(!btn) return;
+            var t = btn.getAttribute('data-t');
+            if(!t) return;
+            try{ localStorage.setItem(THEME_KEY, t); }catch(err){}
+            var h = new Date().getHours();
+            var dark = (t === 'dark') || (t === 'auto' && (h >= 17 || h < 8));
+            document.body.classList.toggle('dark-mode', dark);
+            var tg = document.getElementById('darkModeToggle');
+            if(tg) tg.classList.toggle('active', dark);
+            document.body.dispatchEvent(new Event('themechange'));
+            sync();
+        });
+    }
+    /* 后台播放开关 */
+    if(bgSwitch){
+        bgSwitch.addEventListener('click', function(){
+            var on = !getBg();
+            try{ localStorage.setItem(BG_KEY, on ? '1' : '0'); }catch(e){}
+            bgSwitch.classList.toggle('on', on);
+            bgSwitch.setAttribute('aria-checked', on ? 'true' : 'false');
+            if(bgState) bgState.textContent = on ? '开' : '关';
+        });
+    }
+})();
 function setProgressUI(pct){
     if(!progressBar || !thumb) return;
     if(isNaN(pct)) pct = 0;
@@ -1910,7 +2224,7 @@ function showToast(msg, ms){
 
 /* 音乐加载失败计数与重试上限：CDN 异常时最多重试 MAX_AUDIO_RETRY 次，避免无限循环换歌 */
 var audioFailCount = 0;
-var MAX_AUDIO_RETRY = 3;
+var MAX_AUDIO_RETRY = 9;   /* 第 10 次加载失败时自动停止重试 */
 audio.addEventListener('error', function(){
     audioFailCount++;
     if(audioFailCount <= MAX_AUDIO_RETRY){
@@ -2228,9 +2542,9 @@ audio.addEventListener('error', function(){
     });
 })();
 
-/* ================= 教程按钮 ================= */
+/* ================= 反馈按钮 ================= */
 document.getElementById('tutorialBtn').addEventListener('click', function(){
-    window.open("https://www.axureshow.com/project/445pq3tu/","_blank");
+    window.open("https://wynb.netlify.app","_blank");
 });
 
 /* ================= 卡片点击 ================= */
@@ -2578,6 +2892,8 @@ document.querySelectorAll('.grid-card').forEach(function(item){
         applyFilter();
         buildQuick();
         syncQuickGap();
+        /* 清空搜索时必须同步隐藏授权卡片，避免退出搜索后残留显示成 10 个按钮 */
+        if(window.__hideAuthCards) window.__hideAuthCards();
         input.focus();
     });
 
@@ -2863,14 +3179,14 @@ document.querySelectorAll('.grid-card').forEach(function(item){
     document.addEventListener('dblclick', function(e){ e.preventDefault(); });
 })();
 
-/* ================= 官网功能自检（?test=1 开启：30 遍循环，每 2 遍输出成功/失败；全程零音乐、零 CDN 音频流量） ================= */
+/* ================= 官网功能自检（?test=1 开启：100 遍循环，每 10 遍输出成功/失败；全程零音乐、零 CDN 音频流量） ================= */
 (function(){
     if(!/[?&]test=1/.test(location.search)) return;
     window.__SELF_TEST__ = true;          /* 自检期间所有跳转只捕获目标 URL，绝不真正跳转 */
     window.__CARD_CLICK_DELAY = 0;        /* 加快卡片跳转检测 */
     window.__PREFIX_JUMP_DELAY = 10;      /* 加快前缀跳转检测 */
 
-    var TOTAL = 30;                       /* 总检测遍数 */
+    var TOTAL = 100;                      /* 总检测遍数 */
     var musicPlayed = false;              /* 任一时刻触发过播放即记为失败 */
     var audio = document.getElementById('miniMusicAudio');
 
@@ -2900,7 +3216,7 @@ document.querySelectorAll('.grid-card').forEach(function(item){
     overlay.innerHTML =
         '<div style="width:100%;max-width:520px;max-height:92vh;display:flex;flex-direction:column;background:#0d0e17;border:1px solid rgba(214,185,106,.35);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.5);overflow:hidden;color:#e8e6df;font:13px/1.5 system-ui,sans-serif;">' +
         '<div style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;justify-content:space-between;">' +
-        '<div><b style="color:#d6b96a;font-size:15px;">官网功能自检</b><div style="font-size:11px;color:#9aa0ad;margin-top:2px;">自动检测 30 遍 · 每 2 遍显示结果 · 零音乐播放 · 零 CDN 音频流量</div></div>' +
+        '<div><b style="color:#d6b96a;font-size:15px;">官网功能自检</b><div style="font-size:11px;color:#9aa0ad;margin-top:2px;">自动检测 100 遍 · 每 10 遍显示结果 · 零音乐播放 · 零 CDN 音频流量</div></div>' +
         '<button id="__testClose" style="background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:8px;padding:6px 12px;cursor:pointer;font-size:12px;">关闭</button>' +
         '</div>' +
         '<div id="__testStatus" style="padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px;color:#cfd3dd;">准备中…</div>' +
@@ -3149,7 +3465,7 @@ document.querySelectorAll('.grid-card').forEach(function(item){
         }}
     ];
 
-    /* ---------- 主循环：30 遍，每 2 遍输出一次结果 ---------- */
+    /* ---------- 主循环：100 遍，每 10 遍输出一次结果 ---------- */
     var roundPass = new Array(TOTAL + 1);
     var roundFails = {};
     var failedMap = {};
@@ -3173,8 +3489,8 @@ document.querySelectorAll('.grid-card').forEach(function(item){
             roundPass[r] = fails.length === 0;
             roundFails[r] = fails;
             if(fails.length) failedMap[fails.join('、')] = (failedMap[fails.join('、')] || 0) + 1;
-            if(r % 2 === 0){
-                var prev = r - 1;
+            if(r % 10 === 0){
+                var prev = r - 9;
                 var bothFail = (roundFails[prev] || []).concat(fails);
                 log(bothFail.length === 0
                     ? '<span style="color:#6fcf97;">✓ 第 ' + prev + '–' + r + ' 遍：成功</span>'
@@ -3314,6 +3630,48 @@ if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){
         websiteToken: 'eBWZZZZ8RHWL32ixNnwMa7Qd',
         baseUrl: BASE_URL
       })
+      /* ---- 稳定访客身份：浏览器退出/关闭后，客服后台仍能按同一身份找回全部聊天记录 ----
+         原理：Chatwoot 游客会话默认靠 cookie 维持，cookie 一清记录就“看不见”。
+         这里用 localStorage 生成并记住一个固定用户 ID，每次进入都 setUser 到同一个身份，
+         客服后台（app.chatwoot.com 会话列表）会按此 ID 归档，历史消息不丢。 */
+      window.$chatwoot = window.$chatwoot || {};
+      (function(){
+        var KEY = 'wuyuan_cw_uid';
+        var id = '';
+        try{
+          id = localStorage.getItem(KEY);
+          if(!id){
+            id = 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+            localStorage.setItem(KEY, id);
+          }
+        }catch(e){
+          id = 'u' + Math.random().toString(36).slice(2,10);
+        }
+        // 通过腾讯云网关云函数获取 Chatwoot 身份签名（identifier_hash）
+        // CW_API 按你的 HTTP 网关页面默认域名为准，路径为 /chatwootHmac
+        var CW_API = "https://wuyuannb-d1gcg3tpnc11a02fe-1471619586.ap-shanghai.app.tcloudbase.com/chatwootHmac";
+        fetch(CW_API + "?identifier=" + encodeURIComponent(id))
+          .then(function(r){ return r.json(); })
+          .then(function(res){
+            try{
+              window.$chatwoot.setUser(id, {
+                name: '游客' + id.slice(-4),
+                email: '',
+                identifier_hash: res.identifier_hash || ''
+              });
+            }catch(e){}
+          })
+          .catch(function(){
+            // 接口异常时静默降级：仍可进入聊天，仅身份绑定不生效
+            try{
+              window.$chatwoot.setUser(id, {
+                name: '游客' + id.slice(-4),
+                email: '',
+                identifier_hash: ''
+              });
+            }catch(e){}
+          });
+      })();
     }
   })(document,"script");
 </script>
